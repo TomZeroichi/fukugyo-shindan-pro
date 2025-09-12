@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>副業適性 精密診断（有料会員向け・24問）</title>
+  <style>
+    :root { color-scheme: light; }
+    html, body { margin:0; padding:0; background:#eef3f8; }
+
+    /* ===== アプリ基礎（縦長・1カラム固定） ===== */
+    #shd-app, #shd-app * { box-sizing: border-box; }
+    #shd-app {
+      --card:#ffffff; --muted:#4b5563; --ink:#0b1020;
+      --accent:#0ea5e9; --accent-2:#2563eb; --border:#e5e7eb; --chip:#f3f4f6;
+      --shadow:0 6px 20px rgba(0,0,0,.12);
+      color:var(--ink);
+      font-family: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN","Yu Gothic UI","Noto Sans JP","Meiryo",sans-serif;
+    }
+    #shd-app .shd-wrap { max-width:720px; margin:18px auto 60px; padding:0 14px; }
+    #shd-app .shd-title { font-weight:800; letter-spacing:.02em; font-size:clamp(22px,3.4vw,32px); margin:2px 0 10px; }
+    #shd-app .shd-sub { color:var(--muted); font-size:13px; margin-bottom:16px; }
+    #shd-app .shd-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:14px; margin:12px 0; box-shadow:var(--shadow); }
+    #shd-app .shd-row { display:grid; grid-template-columns:1fr; gap:12px; }
+
+    #shd-app .shd-controls { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    #shd-app .shd-btn { cursor:pointer; background:linear-gradient(180deg,var(--accent),var(--accent-2)); color:#fff; border:0; border-radius:11px; padding:10px 14px; font-weight:700; font-size:14px; box-shadow:0 6px 12px rgba(0,0,0,.15); }
+    #shd-app .shd-btn.outline { background:transparent; color:var(--ink); border:1px solid var(--border); }
+    #shd-app .shd-chip { display:inline-flex; align-items:center; gap:6px; background:var(--chip); color:var(--muted); border:1px solid var(--border); border-radius:999px; padding:6px 10px; font-size:12px; }
+
+    #shd-app .shd-q { display:grid; gap:6px; margin:10px 0 16px; }
+    #shd-app .shd-q h4 { margin:0; font-size:14px; font-weight:800; }
+    #shd-app .shd-q small { color:var(--muted); font-size:12px; }
+    #shd-app .shd-labels { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); }
+
+    /* 1〜5のタップ式ボタン */
+    #shd-app .shd-opts { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+    #shd-app .shd-opt { appearance:none; border:1px solid var(--border); background:var(--chip); color:var(--ink); border-radius:10px; padding:12px 0; font-weight:800; text-align:center; cursor:pointer; user-select:none; }
+    #shd-app .shd-opt[aria-checked="true"] { background:linear-gradient(180deg,var(--accent),var(--accent-2)); color:#fff; border-color:transparent; box-shadow:0 6px 12px rgba(0,0,0,.15); }
+
+    /* 結果バー */
+    #shd-app .shd-bars { display:grid; gap:10px; margin-top:6px; }
+    #shd-app .shd-bar { background:var(--chip); border:1px solid var(--border); border-radius:999px; position:relative; overflow:hidden; }
+    #shd-app .shd-bar>span { display:block; height:14px; background:linear-gradient(90deg,var(--accent-2),var(--accent)); }
+    #shd-app .shd-bar .shd-bar-label { position:absolute; inset:0; display:flex; align-items:center; justify-content:space-between; padding:0 10px; font-size:12px; }
+
+    #shd-app table { width:100%; border-collapse:collapse; }
+    #shd-app th, #shd-app td { border:1px solid var(--border); padding:8px 10px; font-size:13px; vertical-align:top; }
+    #shd-app th { text-align:left; background:var(--chip); }
+    #shd-app .shd-footer { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; margin-top:8px; }
+    #shd-app .center { text-align:center; }
+
+    /* 管理リボン */
+    #admin-ribbon { display:none; position:sticky; top:0; z-index:10;
+      background:rgba(37,99,235,.06); border:1px dashed var(--border);
+      border-radius:12px; padding:8px 12px; margin:12px 0;
+    }
+    #admin-ribbon.show { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  </style>
+</head>
+<body>
+<div id="shd-app" class="is-light">
+  <div class="shd-wrap">
+    <!-- ヘッダー -->
+    <div class="shd-card" style="background:linear-gradient(135deg, rgba(38,99,235,.06), rgba(42,161,152,.05));">
+      <div class="shd-title">副業適性 精密診断（24問｜有料会員）</div>
+      <div class="shd-sub">1〜5のタップ回答で <b>FX / 物販 / MNP / 情報発信</b> のスコアを精密に算出し、「一番向いている」を提案します。※参考情報です。最終判断はご自身で。</div>
+      <div class="shd-controls">
+        <button class="shd-btn outline" id="btn-print">印刷 / PDF保存</button>
+        <button class="shd-btn outline" id="btn-copy">結果をコピー</button>
+        <button class="shd-btn outline" id="btn-reset">一括リセット</button>
+      </div>
+    </div>
+
+    <!-- 管理者モードのリボン -->
+    <div id="admin-ribbon" class="shd-card">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <b>管理者モード</b>
+        <small id="admin-version" class="shd-sub" style="margin:0;"></small>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <label class="shd-chip"><input type="checkbox" id="admin-toggle-debug"> <span>ロジック表示</span></label>
+        <button class="shd-btn outline" id="admin-toggle-advanced">高度な設定</button>
+        <button class="shd-btn outline" id="admin-download-weights">公開用JSONをダウンロード</button>
+        <button class="shd-btn outline" id="admin-exit">終了</button>
+      </div>
+    </div>
+
+    <!-- 設問（動的生成） -->
+    <div class="shd-card">
+      <div id="questions" class="shd-row"></div>
+
+      <!-- 一番下の診断ボタン -->
+      <div class="shd-footer" style="justify-content:center;">
+        <button class="shd-btn" id="btn-diagnose">診断する</button>
+      </div>
+      <div class="shd-footer"><span class="shd-sub">※各質問の1〜5をタップ → 一番下の「診断する」。結果は自動保存されます。</span></div>
+    </div>
+
+    <!-- 診断結果 -->
+    <div class="shd-card" id="result-card" style="display:none;">
+      <div class="shd-row">
+        <div>
+          <h3 style="margin:0 0 8px;">診断スコア</h3>
+          <div class="shd-bars" id="bars"></div>
+        </div>
+        <div>
+          <h3 style="margin:0 0 8px;">要約</h3>
+          <div id="summary" class="shd-sub" style="line-height:1.6;color:var(--ink);"></div>
+        </div>
+      </div>
+      <div id="debug" style="display:none; margin-top:12px;" class="shd-sub"></div>
+    </div>
+
+    <!-- 高度な設定（管理者モードでのみ表示） -->
+    <div class="shd-card" id="advanced-box" style="display:none;">
+      <details open>
+        <summary>スコア重み（上級者向け）</summary>
+        <div class="shd-sub">各設問が <b>FX / 物販 / MNP / 情報発信</b> にどれだけ寄与するかの重み（-1.0〜+1.0）。変更後は自動保存。</div>
+        <table id="weights-table"></table>
+      </details>
+      <div class="shd-footer">
+        <button class="shd-btn outline" id="btn-weights-reset">重みを既定に戻す</button>
+        <button class="shd-btn outline" id="btn-export">設定を書き出し（JSON）</button>
+        <label class="shd-btn outline" for="file-import" style="cursor:pointer;">設定を読み込み（JSON）</label>
+        <input id="file-import" type="file" accept="application/json" style="display:none;">
+      </div>
+    </div>
+
+    <div class="center shd-sub">© Zeroichi Lab | 本ツールは参考情報です。実行は自己責任でお願いします。</div>
+  </div>
+
+  <script>
+  (function(){
+    const $ = (sel, ctx=document) => ctx.querySelector(sel);
+    const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
+
+    /* ====== 設定 ====== */
+    const ADMIN_PIN   = '1357'; // 管理PIN
+    const STORE_KEY   = 'shd_pro_v1_state';
+    const REMOTE_VERSION   = '1'; // weights.jsonキャッシュ破棄用。必要に応じて 2,3... に
+    const REMOTE_CONFIG_URL = './weights.json?v=' + encodeURIComponent(REMOTE_VERSION);
+    const USE_REMOTE_CONFIG = true;
+
+    const CAT = ['FX','物販','MNP','情報発信'];
+
+    /* 質問定義（24問） */
+    const QDEF = [
+      {key:'q1',  t:'初期資金の用意度',                     h:'1=ほぼゼロ / 5=十分な予算を用意できる'},
+      {key:'q2',  t:'在庫・発送への抵抗の無さ',             h:'1=在庫は避けたい / 5=全く抵抗はない'},
+      {key:'q3',  t:'申込・契約・解約などの事務手続き耐性', h:'1=苦手 / 5=得意・楽しい'},
+      {key:'q4',  t:'価格変動へのストレス耐性',             h:'1=変動は無理 / 5=むしろ好き'},
+      {key:'q5',  t:'SNS/文章/動画を継続発信できる',        h:'1=続かない / 5=毎日でもOK'},
+      {key:'q6',  t:'現地調査（店舗巡り・電話）に抵抗がない',h:'1=嫌だ / 5=平気'},
+      {key:'q7',  t:'自動化・ツール活用への意欲',           h:'1=特に不要 / 5=積極的に使いたい・作りたい'},
+      {key:'q8',  t:'即金性の重視度',                       h:'1=急がない / 5=すぐに収益化したい'},
+      {key:'q9',  t:'学習・検証に投下できる時間/週',         h:'1=〜2h / 5=15h〜'},
+      {key:'q10', t:'金銭的リスクの許容度',                 h:'1=極小 / 5=一定の上下は許容'},
+      // 追加分（詳細化）
+      {key:'q11', t:'チャート/テクニカル分析への興味・理解', h:'1=あまりない / 5=深く理解して活用したい'},
+      {key:'q12', t:'レバレッジ管理の規律（損切り/資金管理）',h:'1=ルールは苦手 / 5=厳格に守れる'},
+      {key:'q13', t:'ポジションを翌日に持ち越す許容度',      h:'1=無理 / 5=気にしない'},
+      {key:'q14', t:'携帯料金・キャンペーンの理解度',        h:'1=弱い / 5=詳しい'},
+      {key:'q15', t:'店舗/電話での交渉・確認の得意さ',       h:'1=苦手 / 5=得意'},
+      {key:'q16', t:'特典条件や期日のタスク管理',            h:'1=苦手 / 5=得意'},
+      {key:'q17', t:'仕入れ先の開拓意欲（メーカー/卸/仲介）',h:'1=消極的 / 5=積極的'},
+      {key:'q18', t:'商品リサーチの継続力',                  h:'1=続かない / 5=リサーチが楽しい'},
+      {key:'q19', t:'返品/クレーム対応への抵抗の低さ',       h:'1=苦手 / 5=平気'},
+      {key:'q20', t:'海外EC/配送/関税の基礎知識',            h:'1=ない / 5=基礎はある'},
+      {key:'q21', t:'制作スキル（撮影/編集/デザイン）',      h:'1=ない / 5=自信あり'},
+      {key:'q22', t:'顔出し/声出し/ライブ配信への抵抗',      h:'1=強い / 5=低い'},
+      {key:'q23', t:'SEO/分析（GA/Search Console等）習得意欲',h:'1=低い / 5=高い'},
+      {key:'q24', t:'毎日短時間でも発信を継続できる',        h:'1=難しい / 5=できる'},
+    ];
+    const QLABEL = Object.fromEntries(QDEF.map(q=>[q.key,q.t]));
+
+    const DEFAULT_WEIGHTS = {
+      /* 既存10問（無料版と同じ） */
+      q1:{FX:0.60,物販:1.00,MNP:0.30,情報発信:0.20},
+      q2:{FX:0.00,物販:1.00,MNP:0.00,情報発信:0.00},
+      q3:{FX:0.05,物販:0.30,MNP:1.00,情報発信:0.00},
+      q4:{FX:1.00,物販:0.20,MNP:0.20,情報発信:0.00},
+      q5:{FX:0.10,物販:0.10,MNP:0.10,情報発信:1.00},
+      q6:{FX:0.00,物販:0.40,MNP:1.00,情報発信:0.00},
+      q7:{FX:0.80,物販:0.10,MNP:0.30,情報発信:0.40},
+      q8:{FX:0.20,物販:0.80,MNP:0.60,情報発信:-0.40},
+      q9:{FX:0.80,物販:0.20,MNP:0.20,情報発信:0.70},
+      q10:{FX:0.90,物販:0.50,MNP:0.40,情報発信:0.20},
+      /* 追加14問（詳細化） */
+      q11:{FX:0.90,物販:0.00,MNP:0.00,情報発信:0.10},
+      q12:{FX:1.00,物販:0.10,MNP:0.10,情報発信:0.10},
+      q13:{FX:0.60,物販:0.00,MNP:0.00,情報発信:0.00},
+      q14:{FX:0.00,物販:0.10,MNP:1.00,情報発信:0.00},
+      q15:{FX:0.00,物販:0.20,MNP:0.80,情報発信:0.00},
+      q16:{FX:0.00,物販:0.20,MNP:1.00,情報発信:0.00},
+      q17:{FX:0.00,物販:1.00,MNP:0.10,情報発信:0.00},
+      q18:{FX:0.00,物販:1.00,MNP:0.00,情報発信:0.20},
+      q19:{FX:0.00,物販:0.80,MNP:0.10,情報発信:0.00},
+      q20:{FX:0.00,物販:0.80,MNP:0.00,情報発信:0.20},
+      q21:{FX:0.00,物販:0.10,MNP:0.00,情報発信:1.00},
+      q22:{FX:0.00,物販:0.00,MNP:0.00,情報発信:0.80},
+      q23:{FX:0.00,物販:0.20,MNP:0.00,情報発信:0.80},
+      q24:{FX:0.00,物販:0.10,MNP:0.00,情報発信:1.00},
+    };
+
+    /* ====== 状態 ====== */
+    let state = load() || {
+      light:true, advanced:false, debug:false, autosave:true,
+      answers: Object.fromEntries(QDEF.map(q=>[q.key,3])), // 初期値は全て3
+      weights: JSON.parse(JSON.stringify(DEFAULT_WEIGHTS)),
+      remoteVersion: 0
+    };
+    let isAdmin = (localStorage.getItem('shd_admin') === '1');
+
+    // ====== 起動 ======
+    (async function init(){
+      await loadRemoteConfig();        // 重みの全体反映
+      renderQuestions();               // 設問DOM生成
+      mountOptionControls();           // 1〜5ボタン反映
+      buildWeightsTable();             // 高度な設定テーブル
+      bindPublicEvents();              // 一般向け
+      bindAdminEvents();               // 管理向け
+      bootAdmin();                     // URL or タイトル3連タップでPIN
+      diagnose();                      // 初回算出
+      renderAdminUI();                 // 表示切替
+    })();
+
+    /* ====== リモート設定の読込 ====== */
+    async function loadRemoteConfig(){
+      if(!USE_REMOTE_CONFIG) return;
+      try{
+        const res = await fetch(REMOTE_CONFIG_URL, { cache:'no-store' });
+        if(!res.ok) return;
+        const cfg = await res.json();
+        const remoteVer = (cfg && (cfg.configVersion ?? 0)) | 0;
+        if(cfg && cfg.weights && remoteVer >= (state.remoteVersion ?? 0)){
+          state.weights = Object.assign({}, state.weights, cfg.weights);
+          state.remoteVersion = remoteVer;
+          saveMaybe();
+        }
+      }catch(e){ /* 取得できない場合はデフォルトのまま */ }
+    }
+
+    /* ====== 質問DOM生成 ====== */
+    function renderQuestions(){
+      const wrap = $('#questions'); wrap.innerHTML = '';
+      QDEF.forEach(q=>{
+        const el = document.createElement('div');
+        el.className = 'shd-q'; el.dataset.key = q.key;
+        el.innerHTML = `
+          <h4>${q.t}</h4>
+          <small>${q.h}</small>
+          <div class="shd-opts" role="radiogroup" aria-label="${q.t}"></div>
+          <div class="shd-labels"><span>低い/苦手</span><span>高い/得意</span></div>
+        `;
+        wrap.appendChild(el);
+      });
+    }
+
+    /* ====== 一般イベント ====== */
+    function bindPublicEvents(){
+      $('#btn-diagnose').addEventListener('click', diagnose);
+      $('#btn-copy').addEventListener('click', copyAll);
+      $('#btn-print').addEventListener('click', ()=>window.print());
+      $('#btn-reset').addEventListener('click', ()=>{
+        if(confirm('回答と重みを既定に戻します。よろしいですか？')){
+          state.answers = Object.fromEntries(QDEF.map(q=>[q.key,3]));
+          state.weights = JSON.parse(JSON.stringify(DEFAULT_WEIGHTS));
+          renderQuestions();
+          mountOptionControls();
+          buildWeightsTable();
+          saveMaybe();
+          hideResults();
+        }
+      });
+      // 内部的にライト=ON（UIは非表示）
+      toggleLight(true);
+    }
+
+    /* ====== 管理モード ====== */
+    function bindAdminEvents(){
+      $('#admin-toggle-advanced').addEventListener('click', ()=>{
+        state.advanced = !state.advanced; saveMaybe(); renderAdminUI();
+      });
+      $('#admin-toggle-debug').addEventListener('change', (e)=>{
+        state.debug = e.target.checked; saveMaybe(); renderAdminUI();
+      });
+      $('#admin-exit').addEventListener('click', ()=> setAdmin(false));
+      $('#admin-download-weights').addEventListener('click', ()=>{
+        const payload = {
+          configVersion: (state.remoteVersion|0) + 1,
+          weights: state.weights
+        };
+        exportJSON(payload, 'weights.json');
+      });
+    }
+
+    function bootAdmin(){
+      // URLクエリ
+      const url = new URL(location.href);
+      const qp = url.searchParams.get('admin');
+      if(qp && qp === ADMIN_PIN){
+        setAdmin(true);
+        history.replaceState({}, '', location.pathname);
+      }
+      // スマホ向け：タイトル3連タップ（600ms以内）
+      const titleEl = document.querySelector('.shd-title');
+      let taps = 0, firstTs = 0, TAP_WINDOW = 600;
+      titleEl.addEventListener('pointerdown', ()=>{
+        const now = Date.now();
+        if(!firstTs || now - firstTs > TAP_WINDOW){ firstTs = now; taps = 0; }
+        taps++;
+        if(taps >= 3 && (now - firstTs) <= TAP_WINDOW){
+          const pin = prompt('管理PINを入力');
+          if(pin === ADMIN_PIN) setAdmin(true);
+          taps = 0; firstTs = 0;
+        }
+      });
+      if(isAdmin) renderAdminUI();
+    }
+
+    function setAdmin(flag){
+      isAdmin = !!flag;
+      localStorage.setItem('shd_admin', isAdmin ? '1' : '0');
+      renderAdminUI();
+    }
+
+    function renderAdminUI(){
+      const ribbon = $('#admin-ribbon');
+      ribbon.classList.toggle('show', isAdmin);
+      $('#advanced-box').style.display = (isAdmin && state.advanced) ? 'block' : 'none';
+      $('#debug').style.display       = (isAdmin && state.debug)     ? 'block' : 'none';
+      const dbg = $('#admin-toggle-debug'); if(dbg) dbg.checked = !!state.debug;
+      const ver = $('#admin-version');
+      if(ver){
+        ver.textContent = USE_REMOTE_CONFIG
+          ? `グローバル設定 v${state.remoteVersion ?? 0}（REMOTE_VERSION=${REMOTE_VERSION}）`
+          : 'ローカル設定のみ';
+      }
+    }
+
+    /* ====== 1〜5ボタン反映 ====== */
+    function mountOptionControls(){
+      QDEF.forEach(q=>{
+        const root = document.querySelector(`.shd-q[data-key="${q.key}"]`);
+        const wrap = $('.shd-opts', root); wrap.innerHTML = '';
+        for(let i=1;i<=5;i++){
+          const b = document.createElement('button');
+          b.type='button';
+          b.className='shd-opt';
+          b.dataset.val = i;
+          b.setAttribute('role','radio');
+          b.setAttribute('aria-checked', state.answers[q.key]===i ? 'true' : 'false');
+          b.textContent = i;
+          b.addEventListener('click', ()=>{
+            state.answers[q.key] = i;
+            $$('.shd-opt', wrap).forEach(btn=> btn.setAttribute('aria-checked', btn===b ? 'true' : 'false'));
+            saveMaybe();
+          });
+          wrap.appendChild(b);
+        }
+      });
+    }
+
+    /* ====== 診断ロジック ====== */
+    function diagnose(){
+      const ans = state.answers, W = state.weights;
+      const maxTheo = Object.fromEntries(CAT.map(c=>[c,0]));
+      const raw     = Object.fromEntries(CAT.map(c=>[c,0]));
+      const rows = [];
+
+      QDEF.forEach(q=>{
+        const v = ans[q.key], contrib = {};
+        CAT.forEach(c=>{
+          const w = (W[q.key] && W[q.key][c]) || 0;
+          raw[c] += w * v;
+          maxTheo[c] += w>=0 ? w*5 : w*1;
+          contrib[c] = w * v;
+        });
+        rows.push({q:q.key, v, contrib});
+      });
+
+      const scores = {};
+      CAT.forEach(c=>{
+        let m = maxTheo[c]; if(m===0) m = 1;
+        let s = (raw[c] / m) * 100;
+        scores[c] = Math.max(0, Math.min(100, s));
+      });
+      renderBars(scores);
+      renderSummary(scores, rows);
+      $('#result-card').style.display = 'block';
+      saveMaybe();
+    }
+
+    function renderBars(scores){
+      const wrap = $('#bars'); if(!wrap) return;
+      const items = CAT.map(c=>({c, v:Math.round(scores[c])})).sort((a,b)=> b.v - a.v);
+      wrap.innerHTML = items.map(it=>`
+        <div class="shd-bar">
+          <span style="width:${it.v}%;"></span>
+          <div class="shd-bar-label"><b>${it.c}</b><span>${it.v}%</span></div>
+        </div>`).join('');
+    }
+
+    function renderSummary(scores, rows){
+      const items = CAT.map(c=>({c, v:Math.round(scores[c])})).sort((a,b)=> b.v - a.v);
+      const top = items[0], second = items[1];
+      const hints = {
+        FX:'資金・自動化・検証時間が活きる。価格変動への耐性が鍵。',
+        物販:'在庫/物流に前向きで即金性を狙いやすい。仕入れ基盤を作ると伸びる。',
+        MNP:'事務手続き耐性と現地調査力が強み。案件管理とキャッシュフロー設計が肝。',
+        情報発信:'発信継続力と学習投資を積むほど複利で効く。収益化まで時間設計を。'
+      };
+      $('#summary').innerHTML =
+        `あなたに<b>一番向いている</b>のは <b>${top.c}</b>（${top.v}%）。` +
+        (second && (top.v-second.v)<=5 ? `続いて<b>二番目に向いている</b>のは <b>${second.c}</b>（${second.v}%）。` : '') +
+        `<br>示唆：${hints[top.c]}`;
+
+      if(state.debug && isAdmin){
+        let html = '<h4>診断ロジック詳細</h4><table><tr><th>設問</th>' + CAT.map(c=>`<th>${c}</th>`).join('') + '</tr>';
+        rows.forEach(r=>{
+          html += `<tr><td>${QLABEL[r.q]}（${r.q} / v=${r.v}）</td>` + CAT.map(c=>`<td>${(r.contrib[c]||0).toFixed(2)}</td>`).join('') + '</tr>';
+        });
+        html += '</table>';
+        $('#debug').innerHTML = html;
+      }
+    }
+
+    /* ====== 高度な設定（重み） ====== */
+    function buildWeightsTable(){
+      const tbl = $('#weights-table'); tbl.innerHTML = '';
+      const head = document.createElement('tr');
+      head.innerHTML = `<th>設問</th>${CAT.map(c=>`<th>${c}</th>`).join('')}`;
+      tbl.appendChild(head);
+
+      QDEF.forEach(q=>{
+        if(!state.weights[q.key]){
+          state.weights[q.key] = Object.fromEntries(CAT.map(c=>[c,0]));
+        }
+        const tr = document.createElement('tr');
+        tr.innerHTML =
+          `<th>${q.key}：${q.t}</th>` +
+          CAT.map(c=>`<td><input data-q="${q.key}" data-cat="${c}" type="number" step="0.05" min="-1" max="1" value="${state.weights[q.key][c]}" style="width:90px;"></td>`).join('');
+        tbl.appendChild(tr);
+      });
+
+      $$('#weights-table input').forEach(inp=> inp.addEventListener('input', e=>{
+        const q = e.target.getAttribute('data-q');
+        const c = e.target.getAttribute('data-cat');
+        let v = parseFloat(e.target.value || '0'); if(isNaN(v)) v = 0;
+        v = Math.max(-1, Math.min(1, v)); e.target.value = v.toFixed(2);
+        state.weights[q][c] = v; saveMaybe();
+      }));
+
+      $('#btn-weights-reset').addEventListener('click', ()=>{
+        state.weights = JSON.parse(JSON.stringify(DEFAULT_WEIGHTS));
+        buildWeightsTable(); saveMaybe();
+      });
+
+      $('#btn-export').addEventListener('click', ()=> exportJSON({weights:state.weights}, 'shd_settings.json') );
+      $('#file-import').addEventListener('change', onImportJSON);
+    }
+
+    /* ====== ユーティリティ ====== */
+    function copyAll(){
+      const text = stripHtml($('#summary').innerHTML) + "\n\n" + barsText();
+      navigator.clipboard.writeText(text).then(()=> alert('結果をコピーしました。')).catch(()=> alert('コピーに失敗しました。'));
+    }
+    function barsText(){
+      return $$('#bars .shd-bar').map(bar=> $('.shd-bar-label', bar).innerText.trim()).join('\n');
+    }
+    function stripHtml(html){ const div=document.createElement('div'); div.innerHTML=html; return div.textContent||div.innerText||''; }
+    function exportJSON(obj, filename){
+      const blob = new Blob([JSON.stringify(obj, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url);
+    }
+    function onImportJSON(e){
+      const f = e.target.files[0]; if(!f) return;
+      const reader = new FileReader();
+      reader.onload = ()=>{
+        try{
+          const data = JSON.parse(reader.result);
+          if(data.weights){ state.weights = data.weights; buildWeightsTable(); saveMaybe(); alert('設定を読み込みました。'); }
+        }catch(err){ alert('JSONの読み込みに失敗しました。'); }
+      };
+      reader.readAsText(f);
+    }
+    function hideResults(){ $('#result-card').style.display='none'; }
+    function toggleLight(flag){ document.getElementById('shd-app').classList.toggle('is-light', !!flag); }
+    function saveMaybe(){ if(state.autosave){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); } }
+    function load(){ try{ const s = localStorage.getItem(STORE_KEY); return s? JSON.parse(s): null; }catch(e){ return null; } }
+
+  })();
+  </script>
+</div>
+</body>
+</html>
