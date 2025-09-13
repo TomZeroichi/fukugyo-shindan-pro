@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>副業適性 精密診断 Pro（23問｜GitHub版）</title>
+<meta name="description" content="FX / 物販 / MNP / 情報発信の適性を23問でスコア化。結果は『一番向いている／二番目に向いている』を表示。" />
+<style>
+/* ===== スコープ付きスタイル（他と衝突しない） ===== */
+#shdpro-app, #shdpro-app * { box-sizing: border-box; }
+#shdpro-app {
+  --card:#ffffff; --muted:#4b5563; --ink:#0b1020;
+  --accent:#0ea5e9; --accent-2:#2563eb; --border:#e5e7eb;
+  --chip:#f3f4f6; --shadow:0 6px 20px rgba(0,0,0,.12);
+  color:var(--ink);
+  font-family: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,
+    "Hiragino Kaku Gothic ProN","Yu Gothic UI","Noto Sans JP","Meiryo",sans-serif;
+  background:#eef3f8; padding: 2px;
+}
+#shdpro-app .shdpro-wrap { max-width:720px; margin:18px auto 60px; padding:0 14px; }
+#shdpro-app .shdpro-title { font-weight:800; letter-spacing:.02em; font-size:clamp(22px,3.4vw,32px); margin:2px 0 10px; }
+#shdpro-app .shdpro-sub { color:var(--muted); font-size:13px; margin-bottom:16px; }
+#shdpro-app .shdpro-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:14px; margin:12px 0; box-shadow:var(--shadow); }
+#shdpro-app .shdpro-row { display:grid; grid-template-columns:1fr; gap:12px; }
+#shdpro-app .shdpro-controls { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+#shdpro-app .shdpro-btn { cursor:pointer; background:linear-gradient(180deg,var(--accent),var(--accent-2)); color:#fff; border:0; border-radius:11px; padding:10px 14px; font-weight:700; font-size:14px; box-shadow:0 6px 12px rgba(0,0,0,.15); }
+#shdpro-app .shdpro-btn.outline { background:transparent; color:var(--ink); border:1px solid var(--border); }
+#shdpro-app .shdpro-chip { display:inline-flex; align-items:center; gap:6px; background:var(--chip); color:var(--muted); border:1px solid var(--border); border-radius:999px; padding:6px 10px; font-size:12px; }
+
+#shdpro-app .shdpro-q { display:grid; gap:6px; margin:10px 0 16px; }
+#shdpro-app .shdpro-q h4 { margin:0; font-size:14px; font-weight:800; }
+#shdpro-app .shdpro-q small { color:var(--muted); font-size:12px; }
+#shdpro-app .shdpro-labels { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); }
+
+#shdpro-app .shdpro-opts { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+#shdpro-app .shdpro-opt { appearance:none; border:1px solid var(--border); background:var(--chip); color:var(--ink); border-radius:10px; padding:12px 0; font-weight:800; text-align:center; cursor:pointer; user-select:none; }
+#shdpro-app .shdpro-opt[aria-checked="true"] { background:linear-gradient(180deg,var(--accent),var(--accent-2)); color:#fff; border-color:transparent; box-shadow:0 6px 12px rgba(0,0,0,.15); }
+
+#shdpro-app .shdpro-sec-title { margin:8px 0 0; font-weight:800; font-size:15px; color:var(--accent-2); border-left:4px solid var(--accent-2); padding-left:8px; }
+
+#shdpro-app .shdpro-bars { display:grid; gap:10px; margin-top:6px; }
+#shdpro-app .shdpro-bar { background:var(--chip); border:1px solid var(--border); border-radius:999px; position:relative; overflow:hidden; }
+/* ▼ バー太め（文字のクリアランス確保） */
+#shdpro-app { --bar-h: 26px; }
+#shdpro-app .shdpro-bar>span { display:block; height:var(--bar-h); background:linear-gradient(90deg,var(--accent-2),var(--accent)); }
+#shdpro-app .shdpro-bar .shdpro-bar-label { position:absolute; inset:0; display:flex; align-items:center; justify-content:space-between; padding:0 12px; font-size:12px; min-height:var(--bar-h); }
+/* ▼ ラベル白＋％は黒（仕様） */
+#shdpro-app .shdpro-bar .shdpro-bar-label { color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.45); }
+#shdpro-app .shdpro-bar .shdpro-bar-label span:last-child { color:#000; text-shadow:none; }
+
+#shdpro-app table { width:100%; border-collapse:collapse; }
+#shdpro-app th, #shdpro-app td { border:1px solid var(--border); padding:8px 10px; font-size:13px; vertical-align:top; }
+#shdpro-app th { text-align:left; background:var(--chip); }
+#shdpro-app .shdpro-footer { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; margin-top:8px; }
+#shdpro-app .shdpro-center { text-align:center; }
+
+#shdpro-app #shdpro-fatal { display:none; background:#fff7cc; color:#4a3b00; border:1px solid #ffe38a; border-radius:12px; padding:10px; margin:12px 0; }
+#shdpro-app #shdpro-admin-ribbon { position:sticky; top:0; z-index:10; background:rgba(37,99,235,.06); border:1px dashed var(--border); border-radius:12px; padding:8px 12px; margin:12px 0; }
+</style>
+</head>
+<body>
+<div id="shdpro-app"
+     class="is-light"
+     data-admin-pin="1357"
+     data-remote-version="1"
+     data-weights-url="weights.json">
+  <div class="shdpro-wrap">
+    <!-- ヘッダー -->
+    <div class="shdpro-card" style="background:linear-gradient(135deg, rgba(38,99,235,.06), rgba(42,161,152,.05));">
+      <div class="shdpro-title">副業適性 精密診断（23問｜有料会員）</div>
+      <div class="shdpro-sub">1〜5のタップ回答で <b>FX / 物販 / MNP / 情報発信</b> のスコアを算出し、「一番向いている」を提案します。※参考情報です。最終判断はご自身で。</div>
+      <div class="shdpro-controls">
+        <button class="shdpro-btn outline" id="shdpro-btn-print">印刷 / PDF保存</button>
+        <button class="shdpro-btn outline" id="shdpro-btn-copy">結果をコピー</button>
+        <button class="shdpro-btn outline" id="shdpro-btn-reset">一括リセット</button>
+      </div>
+      <div id="shdpro-fatal" role="alert" aria-live="polite"></div>
+    </div>
+
+    <!-- 管理リボン（PINで解放） -->
+    <div id="shdpro-admin-ribbon" class="shdpro-card" style="display:none;">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <b>管理者モード</b>
+        <small id="shdpro-admin-version" class="shdpro-sub" style="margin:0;"></small>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <label class="shdpro-chip"><input type="checkbox" id="shdpro-admin-toggle-debug"> <span>ロジック表示</span></label>
+        <button class="shdpro-btn outline" id="shdpro-admin-toggle-advanced">高度な設定</button>
+        <button class="shdpro-btn outline" id="shdpro-admin-download-weights">公開用JSONをダウンロード</button>
+        <a class="shdpro-btn outline" id="shdpro-admin-open-weights" href="#" target="_blank" rel="noopener">weights.json を開く</a>
+        <button class="shdpro-btn outline" id="shdpro-admin-exit">終了</button>
+      </div>
+    </div>
+
+    <!-- 設問（ジャンル別セクション＋Q連番） -->
+    <div class="shdpro-card">
+      <div id="shdpro-questions" class="shdpro-row"></div>
+      <div class="shdpro-footer" style="justify-content:center;">
+        <button class="shdpro-btn" id="shdpro-btn-diagnose">診断する</button>
+      </div>
+      <div class="shdpro-footer"><span class="shdpro-sub">※各質問の1〜5をタップ → 一番下の「診断する」。結果は自動保存されます。</span></div>
+    </div>
+
+    <!-- 診断結果 -->
+    <div class="shdpro-card" id="shdpro-result-card" style="display:none;">
+      <div class="shdpro-row">
+        <div>
+          <h3 style="margin:0 0 8px;">診断スコア</h3>
+          <div class="shdpro-bars" id="shdpro-bars"></div>
+        </div>
+        <div>
+          <h3 style="margin:0 0 8px;">要約</h3>
+          <div id="shdpro-summary" class="shdpro-sub" style="line-height:1.6;color:var(--ink);"></div>
+        </div>
+      </div>
+      <div id="shdpro-debug" style="display:none; margin-top:12px;" class="shdpro-sub"></div>
+    </div>
+
+    <!-- 高度な設定（管理者のみ） -->
+    <div class="shdpro-card" id="shdpro-advanced-box" style="display:none;">
+      <details open>
+        <summary>スコア重み（上級者向け）</summary>
+        <div class="shdpro-sub">各設問が <b>FX / 物販 / MNP / 情報発信</b> にどれだけ寄与するかの重み（-1.0〜+1.0）。変更後は自動保存。</div>
+        <table id="shdpro-weights-table"></table>
+      </details>
+      <div class="shdpro-footer">
+        <button class="shdpro-btn outline" id="shdpro-btn-weights-reset">重みを既定に戻す</button>
+        <button class="shdpro-btn outline" id="shdpro-btn-export">設定を書き出し（JSON）</button>
+        <label class="shdpro-btn outline" for="shdpro-file-import" style="cursor:pointer;">設定を読み込み（JSON）</label>
+        <input id="shdpro-file-import" type="file" accept="application/json" style="display:none;">
+      </div>
+    </div>
+
+    <div class="shdpro-center shdpro-sub">© Zeroichi Lab | 本ツールは参考情報です。実行は自己責任でお願いします。</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const root = document.getElementById('shdpro-app');
+  if(!root) return;
+
+  const $  = (s, c=document) => c.querySelector(s);
+  const $$ = (s, c=document) => Array.from(c.querySelectorAll(s));
+
+  const ADMIN_PIN  = root.dataset.adminPin || '1357';
+  const REMOTE_VERSION = root.dataset.remoteVersion || '1';
+  const REMOTE_CONFIG_URL = (root.dataset.weightsUrl || './weights.json') + '?v=' + encodeURIComponent(REMOTE_VERSION);
+  const STORE_KEY  = 'shdpro_gh_v1_state';
+
+  const CAT = ['FX','物販','MNP','情報発信'];
+
+  // ==== 設問（初心者向け表現・q23なし）====
+  const QDEF = [
+    // FX
+    {key:'q4',  t:'価格が上下しても落ち着いていられる？',         h:'1=少しの上下でも不安になる / 5=変動を見ても落ち着いて判断できる', section:'FX'},
+    {key:'q7',  t:'ツールや自動化で作業を楽にしたい？',             h:'1=あまり使わない / 5=積極的に使いたい', section:'FX'},
+    {key:'q9',  t:'毎週どれくらい学習や検証に時間を使える？',       h:'1=ほとんど取れない（〜2時間） / 5=たっぷり取れる（15時間以上）', section:'FX'},
+    {key:'q10', t:'お金の増減にどのくらい耐えられる？',             h:'1=ほとんどリスクは取りたくない / 5=ある程度の上下は大丈夫', section:'FX'},
+    {key:'q11', t:'チャートを見て分析するのは得意？',               h:'1=苦手・興味が薄い / 5=好き・深く理解したい', section:'FX'},
+    {key:'q12', t:'損切りや資金管理など、決めたルールを守れる？',   h:'1=ルールが続かない / 5=きっちり守れる', section:'FX'},
+    {key:'q13', t:'保有中のポジションを翌日まで持ち越しても平気？', h:'1=無理 / 5=問題ない', section:'FX'},
+
+    // 物販
+    {key:'q1',  t:'最初に使える予算は用意できる？',                 h:'1=ほぼゼロ / 5=十分に用意できる', section:'物販'},
+    {key:'q2',  t:'在庫を持ったり梱包・発送をするのは大丈夫？',     h:'1=できれば避けたい / 5=抵抗はない', section:'物販'},
+    {key:'q8',  t:'早く現金化できることはどれくらい大事？',         h:'1=急がない / 5=できるだけ早い方がよい', section:'物販'},
+    {key:'q17', t:'仕入れ先を探して交渉してみたい？',               h:'1=消極的 / 5=積極的にやりたい', section:'物販'},
+    {key:'q18', t:'商品を探したり比べたりするのは続けられる？',     h:'1=続かない / 5=楽しく続けられる', section:'物販'},
+    {key:'q19', t:'返品や問い合わせ対応はどのくらい平気？',         h:'1=とても苦手 / 5=落ち着いて対応できる', section:'物販'},
+    {key:'q20', t:'海外ECや配送、関税の基礎知識はある？',           h:'1=ほぼない / 5=基礎はある', section:'物販'},
+
+    // MNP
+    {key:'q3',  t:'申し込み・契約・解約などの手続きをコツコツ進められる？', h:'1=苦手 / 5=得意・むしろ好き', section:'MNP'},
+    {key:'q6',  t:'店舗に行ったり電話で確認するのは平気？',               h:'1=できれば避けたい / 5=問題なくできる', section:'MNP'},
+    {key:'q14', t:'携帯料金やキャンペーンの仕組みに詳しい？',               h:'1=あまり詳しくない / 5=かなり詳しい', section:'MNP'},
+    {key:'q15', t:'店員さんや電話での交渉・確認は得意？',                   h:'1=苦手 / 5=得意', section:'MNP'},
+    {key:'q16', t:'特典の条件や期日を漏れなく管理できる？',                 h:'1=管理が苦手 / 5=得意で抜け漏れが少ない', section:'MNP'},
+
+    // 情報発信
+    {key:'q5',  t:'SNSやブログ・動画で継続して発信できる？',         h:'1=続かない / 5=毎日でもできる', section:'情報発信'},
+    {key:'q21', t:'撮影・編集・デザインなど制作スキルはどのくらい？', h:'1=ほぼない / 5=自信がある', section:'情報発信'},
+    {key:'q22', t:'顔出し・声出し・ライブ配信への抵抗は？',         h:'1=とても抵抗がある / 5=あまり抵抗がない', section:'情報発信'},
+    {key:'q24', t:'短時間でも毎日コツコツ発信を続けられる？',       h:'1=難しい / 5=できる', section:'情報発信'},
+  ];
+  const QLABEL = Object.fromEntries(QDEF.map(q=>[q.key,q.t]));
+
+  // 既定ウェイト（フェイルセーフ。weights.json取得失敗時に使用）
+  const DEFAULT_WEIGHTS = {
+    q1:{FX:0.60,物販:1.00,MNP:0.30,情報発信:0.20}, q2:{FX:0.00,物販:1.00,MNP:0.00,情報発信:0.00},
+    q3:{FX:0.05,物販:0.30,MNP:1.00,情報発信:0.00}, q4:{FX:1.00,物販:0.20,MNP:0.20,情報発信:0.00},
+    q5:{FX:0.10,物販:0.10,MNP:0.10,情報発信:1.00}, q6:{FX:0.00,物販:0.40,MNP:1.00,情報発信:0.00},
+    q7:{FX:0.80,物販:0.10,MNP:0.30,情報発信:0.40}, q8:{FX:0.20,物販:0.80,MNP:0.60,情報発信:-0.40},
+    q9:{FX:0.80,物販:0.20,MNP:0.20,情報発信:0.70}, q10:{FX:0.90,物販:0.50,MNP:0.40,情報発信:0.20},
+    q11:{FX:0.90,物販:0.00,MNP:0.00,情報発信:0.10}, q12:{FX:1.00,物販:0.10,MNP:0.10,情報発信:0.10},
+    q13:{FX:0.60,物販:0.00,MNP:0.00,情報発信:0.00}, q14:{FX:0.00,物販:0.10,MNP:1.00,情報発信:0.00},
+    q15:{FX:0.00,物販:0.20,MNP:0.80,情報発信:0.00}, q16:{FX:0.00,物販:0.20,MNP:1.00,情報発信:0.00},
+    q17:{FX:0.00,物販:1.00,MNP:0.10,情報発信:0.00}, q18:{FX:0.00,物販:1.00,MNP:0.00,情報発信:0.20},
+    q19:{FX:0.00,物販:0.80,MNP:0.10,情報発信:0.00}, q20:{FX:0.00,物販:0.80,MNP:0.00,情報発信:0.20},
+    q21:{FX:0.00,物販:0.10,MNP:0.00,情報発信:1.00}, q22:{FX:0.00,物販:0.00,MNP:0.00,情報発信:0.80},
+    q24:{FX:0.00,物販:0.10,MNP:0.00,情報発信:1.00},
+  };
+
+  let state = load() || {
+    light:true, advanced:false, debug:false, autosave:true,
+    answers: Object.fromEntries(QDEF.map(q=>[q.key,3])), // 初期値3で全部セット
+    weights: JSON.parse(JSON.stringify(DEFAULT_WEIGHTS)),
+    remoteVersion: 0
+  };
+  let isAdmin = (localStorage.getItem('shd_admin') === '1');
+
+  // ===== 初期化 =====
+  (async function init(){
+    await loadRemoteConfig(); // 失敗しても続行（既定で動作）
+    renderQuestions();        // セクション＋Q連番
+    mountOptionControls();
+    buildWeightsTable();
+    bindPublicEvents();
+    bindAdminEvents();
+    bootAdmin();
+    diagnose();
+    renderAdminUI();
+  })();
+
+  // ===== リモート設定（weights.json）=====
+  async function loadRemoteConfig(){
+    try{
+      const res = await fetch(REMOTE_CONFIG_URL, { cache:'no-store' });
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      const cfg = await res.json();
+      const remoteVer = (cfg && (cfg.configVersion ?? 0)) | 0;
+      if(cfg && cfg.weights && remoteVer >= (state.remoteVersion ?? 0)){
+        // 互換：q23があっても無視
+        if (cfg.weights.q23) delete cfg.weights.q23;
+        state.weights = Object.assign({}, state.weights, cfg.weights);
+        state.remoteVersion = remoteVer;
+        saveMaybe();
+      }
+      // リンク更新
+      $('#shdpro-admin-open-weights').setAttribute('href', REMOTE_CONFIG_URL.replace(/\?v=.*/,''));
+      $('#shdpro-admin-version').textContent = `グローバル設定 v${state.remoteVersion ?? 0}（REMOTE_VERSION=${REMOTE_VERSION}）`;
+    }catch(e){
+      const box = $('#shdpro-fatal');
+      if(box){
+        box.style.display = 'block';
+        box.textContent = 'グローバル設定の取得に失敗したため、内蔵の既定設定で動作しています（オフラインモード）。';
+      }
+      console.warn('weights fetch error:', e);
+    }
+  }
+
+  // ===== 設問DOM（ジャンル見出し＋Q連番）=====
+  function renderQuestions(){
+    const wrap = $('#shdpro-questions'); wrap.innerHTML = '';
+    const sections = ['FX','物販','MNP','情報発信'];
+    let qnum = 1;
+    sections.forEach(sec=>{
+      const secTitle = document.createElement('h3');
+      secTitle.className = 'shdpro-sec-title';
+      secTitle.textContent = sec;
+      wrap.appendChild(secTitle);
+
+      QDEF.filter(q=>q.section===sec).forEach(q=>{
+        const el = document.createElement('div');
+        el.className = 'shdpro-q'; el.dataset.key = q.key;
+        el.innerHTML = `
+          <h4>Q${qnum}. ${q.t}</h4>
+          <small>${q.h}</small>
+          <div class="shdpro-opts" role="radiogroup" aria-label="Q${qnum}. ${q.t}"></div>
+          <div class="shdpro-labels"><span>低い/苦手</span><span>高い/得意</span></div>`;
+        wrap.appendChild(el);
+        qnum++;
+      });
+    });
+  }
+
+  // ===== イベント（一般）=====
+  function bindPublicEvents(){
+    $('#shdpro-btn-diagnose').addEventListener('click', diagnose);
+    $('#shdpro-btn-copy').addEventListener('click', copyAll);
+    $('#shdpro-btn-print').addEventListener('click', ()=>window.print());
+    $('#shdpro-btn-reset').addEventListener('click', ()=>{
+      if(confirm('回答と重みを既定に戻します。よろしいですか？')){
+        state.answers = Object.fromEntries(QDEF.map(q=>[q.key,3]));
+        state.weights = JSON.parse(JSON.stringify(DEFAULT_WEIGHTS));
+        renderQuestions(); mountOptionControls(); buildWeightsTable();
+        saveMaybe(); hideResults();
+      }
+    });
+  }
+
+  // ===== 管理モード =====
+  function bindAdminEvents(){
+    $('#shdpro-admin-toggle-advanced').addEventListener('click', ()=>{
+      state.advanced = !state.advanced; saveMaybe(); renderAdminUI();
+    });
+    $('#shdpro-admin-toggle-debug').addEventListener('change', (e)=>{
+      state.debug = e.target.checked; saveMaybe(); renderAdminUI();
+    });
+    $('#shdpro-admin-exit').addEventListener('click', ()=> setAdmin(false));
+    $('#shdpro-admin-download-weights').addEventListener('click', ()=>{
+      const payload = { configVersion: (state.remoteVersion|0) + 1, weights: state.weights };
+      exportJSON(payload, 'weights.json');
+    });
+    // 「weights.json を開く」は loadRemoteConfig() 内でhref設定
+  }
+
+  function bootAdmin(){
+    // URL ?admin=PIN
+    const url = new URL(location.href);
+    const qp = url.searchParams.get('admin');
+    if(qp && qp === ADMIN_PIN){
+      setAdmin(true);
+      history.replaceState({}, '', location.pathname + location.search.replace(/([?&])admin=[^&]+&?/,'$1').replace(/[?&]$/,''));
+    }
+    // スマホ向け：タイトル3連タップ（600ms以内）
+    const titleEl = $('.shdpro-title');
+    let taps = 0, firstTs = 0, TAP_WINDOW = 600;
+    titleEl.addEventListener('pointerdown', ()=>{
+      const now = Date.now();
+      if(!firstTs || now - firstTs > TAP_WINDOW){ firstTs = now; taps = 0; }
+      taps++;
+      if(taps >= 3 && (now - firstTs) <= TAP_WINDOW){
+        const pin = prompt('管理PINを入力');
+        if(pin === ADMIN_PIN) setAdmin(true);
+        taps = 0; firstTs = 0;
+      }
+    });
+    if(isAdmin) renderAdminUI();
+  }
+
+  function setAdmin(flag){
+    isAdmin = !!flag;
+    localStorage.setItem('shd_admin', isAdmin ? '1' : '0');
+    renderAdminUI();
+  }
+
+  function renderAdminUI(){
+    const ribbon = $('#shdpro-admin-ribbon');
+    ribbon.style.display = isAdmin ? 'block' : 'none';
+    $('#shdpro-advanced-box').style.display = (isAdmin && state.advanced) ? 'block' : 'none';
+    $('#shdpro-debug').style.display       = (isAdmin && state.debug)     ? 'block' : 'none';
+    const dbg = $('#shdpro-admin-toggle-debug'); if(dbg) dbg.checked = !!state.debug;
+    const ver = $('#shdpro-admin-version');
+    if(ver){ ver.textContent = `グローバル設定 v${state.remoteVersion ?? 0}（REMOTE_VERSION=${REMOTE_VERSION}）`; }
+  }
+
+  // ===== 1〜5ボタン =====
+  function mountOptionControls(){
+    QDEF.forEach(q=>{
+      const rootQ = document.querySelector(`.shdpro-q[data-key="${q.key}"]`);
+      const wrap = $('.shdpro-opts', rootQ); if(!wrap) return; wrap.innerHTML = '';
+      for(let i=1;i<=5;i++){
+        const b = document.createElement('button');
+        b.type='button'; b.className='shdpro-opt'; b.dataset.val = i;
+        b.setAttribute('role','radio');
+        b.setAttribute('aria-checked', state.answers[q.key]===i ? 'true' : 'false');
+        b.textContent = i;
+        b.addEventListener('click', ()=>{
+          state.answers[q.key] = i;
+          $$('.shdpro-opt', wrap).forEach(btn=> btn.setAttribute('aria-checked', btn===b ? 'true' : 'false'));
+          saveMaybe();
+        });
+        wrap.appendChild(b);
+      }
+    });
+  }
+
+  // ===== 診断ロジック =====
+  function diagnose(){
+    const ans = state.answers, W = state.weights;
+    const maxTheo = Object.fromEntries(CAT.map(c=>[c,0]));
+    const raw     = Object.fromEntries(CAT.map(c=>[c,0]));
+    const rows = [];
+
+    QDEF.forEach(q=>{
+      const v = ans[q.key], contrib = {};
+      CAT.forEach(c=>{
+        const w = (W[q.key] && W[q.key][c]) || 0;
+        raw[c] += w * v;
+        maxTheo[c] += w>=0 ? w*5 : w*1; // 正規化用
+        contrib[c] = w * v;
+      });
+      rows.push({q:q.key, v, contrib});
+    });
+
+    const scores = {};
+    CAT.forEach(c=>{
+      let m = maxTheo[c]; if(m===0) m = 1;
+      let s = (raw[c] / m) * 100;
+      scores[c] = Math.max(0, Math.min(100, s));
+    });
+    renderBars(scores);
+    renderSummary(scores, rows);
+    $('#shdpro-result-card').style.display = 'block';
+    saveMaybe();
+  }
+
+  function renderBars(scores){
+    const wrap = $('#shdpro-bars'); if(!wrap) return;
+    const items = CAT.map(c=>({c, v:Math.round(scores[c])})).sort((a,b)=> b.v - a.v);
+    wrap.innerHTML = items.map(it=>`
+      <div class="shdpro-bar">
+        <span style="width:${it.v}%;"></span>
+        <div class="shdpro-bar-label"><b>${it.c}</b><span>${it.v}%</span></div>
+      </div>`).join('');
+  }
+
+  function renderSummary(scores, rows){
+    const items = CAT.map(c=>({c, v:Math.round(scores[c])})).sort((a,b)=> b.v - a.v);
+    const top = items[0], second = items[1];
+    const hints = {
+      FX:'資金・自動化・検証時間が活きる。価格変動への耐性が鍵。',
+      物販:'在庫/物流に前向きで即金性を狙いやすい。仕入れ基盤を作ると伸びる。',
+      MNP:'事務手続き耐性と現地調査力が強み。案件管理とキャッシュフロー設計が肝。',
+      情報発信:'発信継続力と学習投資を積むほど複利で効く。収益化まで時間設計を。'
+    };
+    $('#shdpro-summary').innerHTML =
+      `あなたに<b>一番向いている</b>のは <b>${top.c}</b>（${top.v}%）。` +
+      (second && (top.v-second.v)<=5 ? `続いて<b>二番目に向いている</b>のは <b>${second.c}</b>（${second.v}%）。` : '') +
+      `<br>示唆：${hints[top.c]}`;
+
+    if(state.debug && isAdmin){
+      let html = '<h4>診断ロジック詳細</h4><table><tr><th>設問</th>' + CAT.map(c=>`<th>${c}</th>`).join('') + '</tr>';
+      rows.forEach(r=>{
+        html += `<tr><td>${QLABEL[r.q]}（${r.q} / v=${r.v}）</td>` + CAT.map(c=>`<td>${(r.contrib[c]||0).toFixed(2)}</td>`).join('') + '</tr>';
+      });
+      html += '</table>';
+      $('#shdpro-debug').innerHTML = html;
+    }
+  }
+
+  // ===== 高度な設定（重み編集）=====
+  function buildWeightsTable(){
+    const tbl = $('#shdpro-weights-table'); tbl.innerHTML = '';
+    const head = document.createElement('tr');
+    head.innerHTML = `<th>設問</th>${CAT.map(c=>`<th>${c}</th>`).join('')}`;
+    tbl.appendChild(head);
+
+    QDEF.forEach(q=>{
+      if(!state.weights[q.key]){
+        state.weights[q.key] = Object.fromEntries(CAT.map(c=>[c,0]));
+      }
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        `<th>${q.key}：${q.t}</th>` +
+        CAT.map(c=>`<td><input data-q="${q.key}" data-cat="${c}" type="number" step="0.05" min="-1" max="1" value="${state.weights[q.key][c]}" style="width:90px;"></td>`).join('');
+      tbl.appendChild(tr);
+    });
+
+    $$('#shdpro-weights-table input').forEach(inp=> inp.addEventListener('input', e=>{
+      const q = e.target.getAttribute('data-q');
+      const c = e.target.getAttribute('data-cat');
+      let v = parseFloat(e.target.value || '0'); if(isNaN(v)) v = 0;
+      v = Math.max(-1, Math.min(1, v)); e.target.value = v.toFixed(2);
+      state.weights[q][c] = v; saveMaybe();
+    }));
+
+    $('#shdpro-btn-weights-reset').addEventListener('click', ()=>{
+      state.weights = JSON.parse(JSON.stringify(DEFAULT_WEIGHTS));
+      buildWeightsTable(); saveMaybe();
+    });
+
+    $('#shdpro-btn-export').addEventListener('click', ()=> exportJSON({weights:state.weights}, 'shd_settings.json') );
+    $('#shdpro-file-import').addEventListener('change', onImportJSON);
+  }
+
+  // ===== ユーティリティ =====
+  function copyAll(){
+    const text = stripHtml($('#shdpro-summary').innerHTML) + "\n\n" + barsText();
+    navigator.clipboard.writeText(text).then(()=> alert('結果をコピーしました。')).catch(()=> alert('コピーに失敗しました。'));
+  }
+  function barsText(){
+    return $$('#shdpro-bars .shdpro-bar').map(bar=> $('.shdpro-bar-label', bar).innerText.trim()).join('\n');
+  }
+  function stripHtml(html){ const div=document.createElement('div'); div.innerHTML=html; return div.textContent||div.innerText||''; }
+  function exportJSON(obj, filename){
+    const blob = new Blob([JSON.stringify(obj, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url);
+  }
+  function onImportJSON(e){
+    const f = e.target.files[0]; if(!f) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      try{
+        const data = JSON.parse(reader.result);
+        if(data.weights){
+          if(data.weights.q23) delete data.weights.q23; // 互換
+          state.weights = data.weights;
+          buildWeightsTable(); saveMaybe(); alert('設定を読み込みました。');
+        }
+      }catch(err){ alert('JSONの読み込みに失敗しました。'); }
+    };
+    reader.readAsText(f);
+  }
+  function hideResults(){ $('#shdpro-result-card').style.display='none'; }
+  function saveMaybe(){ if(state.autosave){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); } }
+  function load(){ try{ const s = localStorage.getItem(STORE_KEY); return s? JSON.parse(s): null; }catch(e){ return null; } }
+})();
+</script>
+</body>
+</html>
