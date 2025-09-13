@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>副業適性 精密診断 Pro（23問｜GitHub版）</title>
+<title>副業適性 精密診断 Pro（23問｜GitHub版・堅牢）</title>
 <meta name="description" content="FX / 物販 / MNP / 情報発信の適性を23問でスコア化。結果は『一番向いている／二番目に向いている』を表示。" />
 <style>
-/* ===== スコープ付きスタイル（他と衝突しない） ===== */
+/* ===== スコープ付きスタイル ===== */
 #shdpro-app, #shdpro-app * { box-sizing: border-box; }
 #shdpro-app {
   --card:#ffffff; --muted:#4b5563; --ink:#0b1020;
@@ -38,13 +38,13 @@
 
 #shdpro-app .shdpro-sec-title { margin:8px 0 0; font-weight:800; font-size:15px; color:var(--accent-2); border-left:4px solid var(--accent-2); padding-left:8px; }
 
+/* バー（太め） */
+#shdpro-app { --bar-h: 26px; }
 #shdpro-app .shdpro-bars { display:grid; gap:10px; margin-top:6px; }
 #shdpro-app .shdpro-bar { background:var(--chip); border:1px solid var(--border); border-radius:999px; position:relative; overflow:hidden; }
-/* ▼ バー太め（文字のクリアランス確保） */
-#shdpro-app { --bar-h: 26px; }
 #shdpro-app .shdpro-bar>span { display:block; height:var(--bar-h); background:linear-gradient(90deg,var(--accent-2),var(--accent)); }
 #shdpro-app .shdpro-bar .shdpro-bar-label { position:absolute; inset:0; display:flex; align-items:center; justify-content:space-between; padding:0 12px; font-size:12px; min-height:var(--bar-h); }
-/* ▼ ラベル白＋％は黒（仕様） */
+/* ラベル白＋％は黒 */
 #shdpro-app .shdpro-bar .shdpro-bar-label { color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.45); }
 #shdpro-app .shdpro-bar .shdpro-bar-label span:last-child { color:#000; text-shadow:none; }
 
@@ -53,7 +53,6 @@
 #shdpro-app th { text-align:left; background:var(--chip); }
 #shdpro-app .shdpro-footer { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; margin-top:8px; }
 #shdpro-app .shdpro-center { text-align:center; }
-
 #shdpro-app #shdpro-fatal { display:none; background:#fff7cc; color:#4a3b00; border:1px solid #ffe38a; border-radius:12px; padding:10px; margin:12px 0; }
 #shdpro-app #shdpro-admin-ribbon { position:sticky; top:0; z-index:10; background:rgba(37,99,235,.06); border:1px dashed var(--border); border-radius:12px; padding:8px 12px; margin:12px 0; }
 </style>
@@ -62,7 +61,7 @@
 <div id="shdpro-app"
      class="is-light"
      data-admin-pin="1357"
-     data-remote-version="1"
+     data-remote-version="2"         <!-- ← 必要に応じて上げる -->
      data-weights-url="weights.json">
   <div class="shdpro-wrap">
     <!-- ヘッダー -->
@@ -77,7 +76,7 @@
       <div id="shdpro-fatal" role="alert" aria-live="polite"></div>
     </div>
 
-    <!-- 管理リボン（PINで解放） -->
+    <!-- 管理リボン -->
     <div id="shdpro-admin-ribbon" class="shdpro-card" style="display:none;">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
         <b>管理者モード</b>
@@ -92,7 +91,7 @@
       </div>
     </div>
 
-    <!-- 設問（ジャンル別セクション＋Q連番） -->
+    <!-- 設問 -->
     <div class="shdpro-card">
       <div id="shdpro-questions" class="shdpro-row"></div>
       <div class="shdpro-footer" style="justify-content:center;">
@@ -116,7 +115,7 @@
       <div id="shdpro-debug" style="display:none; margin-top:12px;" class="shdpro-sub"></div>
     </div>
 
-    <!-- 高度な設定（管理者のみ） -->
+    <!-- 高度な設定 -->
     <div class="shdpro-card" id="shdpro-advanced-box" style="display:none;">
       <details open>
         <summary>スコア重み（上級者向け）</summary>
@@ -135,6 +134,38 @@
   </div>
 </div>
 
+<!-- 取得失敗時のフォールバック用：埋め込みweights -->
+<script type="application/json" id="embedded-weights">
+{
+  "configVersion": 2,
+  "weights": {
+    "q1":{"FX":0.6,"物販":1.0,"MNP":0.3,"情報発信":0.2},
+    "q2":{"FX":0.0,"物販":1.0,"MNP":0.0,"情報発信":0.0},
+    "q3":{"FX":0.05,"物販":0.3,"MNP":1.0,"情報発信":0.0},
+    "q4":{"FX":1.0,"物販":0.2,"MNP":0.2,"情報発信":0.0},
+    "q5":{"FX":0.1,"物販":0.1,"MNP":0.1,"情報発信":1.0},
+    "q6":{"FX":0.0,"物販":0.4,"MNP":1.0,"情報発信":0.0},
+    "q7":{"FX":0.8,"物販":0.1,"MNP":0.3,"情報発信":0.4},
+    "q8":{"FX":0.2,"物販":0.8,"MNP":0.6,"情報発信":-0.4},
+    "q9":{"FX":0.8,"物販":0.2,"MNP":0.2,"情報発信":0.7},
+    "q10":{"FX":0.9,"物販":0.5,"MNP":0.4,"情報発信":0.2},
+    "q11":{"FX":0.9,"物販":0.0,"MNP":0.0,"情報発信":0.1},
+    "q12":{"FX":1.0,"物販":0.1,"MNP":0.1,"情報発信":0.1},
+    "q13":{"FX":0.6,"物販":0.0,"MNP":0.0,"情報発信":0.0},
+    "q14":{"FX":0.0,"物販":0.1,"MNP":1.0,"情報発信":0.0},
+    "q15":{"FX":0.0,"物販":0.2,"MNP":0.8,"情報発信":0.0},
+    "q16":{"FX":0.0,"物販":0.2,"MNP":1.0,"情報発信":0.0},
+    "q17":{"FX":0.0,"物販":1.0,"MNP":0.1,"情報発信":0.0},
+    "q18":{"FX":0.0,"物販":1.0,"MNP":0.0,"情報発信":0.2},
+    "q19":{"FX":0.0,"物販":0.8,"MNP":0.1,"情報発信":0.0},
+    "q20":{"FX":0.0,"物販":0.8,"MNP":0.0,"情報発信":0.2},
+    "q21":{"FX":0.0,"物販":0.1,"MNP":0.0,"情報発信":1.0},
+    "q22":{"FX":0.0,"物販":0.0,"MNP":0.0,"情報発信":0.8},
+    "q24":{"FX":0.0,"物販":0.1,"MNP":0.0,"情報発信":1.0}
+  }
+}
+</script>
+
 <script>
 (function(){
   const root = document.getElementById('shdpro-app');
@@ -145,74 +176,57 @@
 
   const ADMIN_PIN  = root.dataset.adminPin || '1357';
   const REMOTE_VERSION = root.dataset.remoteVersion || '1';
-  const REMOTE_CONFIG_URL = (root.dataset.weightsUrl || './weights.json') + '?v=' + encodeURIComponent(REMOTE_VERSION);
   const STORE_KEY  = 'shdpro_gh_v1_state';
 
   const CAT = ['FX','物販','MNP','情報発信'];
 
-  // ==== 設問（初心者向け表現・q23なし）====
+  /* ========== 設問（初心者向け） ========== */
   const QDEF = [
     // FX
-    {key:'q4',  t:'価格が上下しても落ち着いていられる？',         h:'1=少しの上下でも不安になる / 5=変動を見ても落ち着いて判断できる', section:'FX'},
-    {key:'q7',  t:'ツールや自動化で作業を楽にしたい？',             h:'1=あまり使わない / 5=積極的に使いたい', section:'FX'},
-    {key:'q9',  t:'毎週どれくらい学習や検証に時間を使える？',       h:'1=ほとんど取れない（〜2時間） / 5=たっぷり取れる（15時間以上）', section:'FX'},
-    {key:'q10', t:'お金の増減にどのくらい耐えられる？',             h:'1=ほとんどリスクは取りたくない / 5=ある程度の上下は大丈夫', section:'FX'},
-    {key:'q11', t:'チャートを見て分析するのは得意？',               h:'1=苦手・興味が薄い / 5=好き・深く理解したい', section:'FX'},
-    {key:'q12', t:'損切りや資金管理など、決めたルールを守れる？',   h:'1=ルールが続かない / 5=きっちり守れる', section:'FX'},
-    {key:'q13', t:'保有中のポジションを翌日まで持ち越しても平気？', h:'1=無理 / 5=問題ない', section:'FX'},
-
+    {key:'q4',t:'価格が上下しても落ち着いていられる？',h:'1=少しの上下でも不安になる / 5=変動を見ても落ち着いて判断できる',section:'FX'},
+    {key:'q7',t:'ツールや自動化で作業を楽にしたい？',h:'1=あまり使わない / 5=積極的に使いたい',section:'FX'},
+    {key:'q9',t:'毎週どれくらい学習や検証に時間を使える？',h:'1=ほとんど取れない（〜2時間） / 5=たっぷり取れる（15時間以上）',section:'FX'},
+    {key:'q10',t:'お金の増減にどのくらい耐えられる？',h:'1=ほとんどリスクは取りたくない / 5=ある程度の上下は大丈夫',section:'FX'},
+    {key:'q11',t:'チャートを見て分析するのは得意？',h:'1=苦手・興味が薄い / 5=好き・深く理解したい',section:'FX'},
+    {key:'q12',t:'損切りや資金管理など、決めたルールを守れる？',h:'1=ルールが続かない / 5=きっちり守れる',section:'FX'},
+    {key:'q13',t:'保有中のポジションを翌日まで持ち越しても平気？',h:'1=無理 / 5=問題ない',section:'FX'},
     // 物販
-    {key:'q1',  t:'最初に使える予算は用意できる？',                 h:'1=ほぼゼロ / 5=十分に用意できる', section:'物販'},
-    {key:'q2',  t:'在庫を持ったり梱包・発送をするのは大丈夫？',     h:'1=できれば避けたい / 5=抵抗はない', section:'物販'},
-    {key:'q8',  t:'早く現金化できることはどれくらい大事？',         h:'1=急がない / 5=できるだけ早い方がよい', section:'物販'},
-    {key:'q17', t:'仕入れ先を探して交渉してみたい？',               h:'1=消極的 / 5=積極的にやりたい', section:'物販'},
-    {key:'q18', t:'商品を探したり比べたりするのは続けられる？',     h:'1=続かない / 5=楽しく続けられる', section:'物販'},
-    {key:'q19', t:'返品や問い合わせ対応はどのくらい平気？',         h:'1=とても苦手 / 5=落ち着いて対応できる', section:'物販'},
-    {key:'q20', t:'海外ECや配送、関税の基礎知識はある？',           h:'1=ほぼない / 5=基礎はある', section:'物販'},
-
+    {key:'q1',t:'最初に使える予算は用意できる？',h:'1=ほぼゼロ / 5=十分に用意できる',section:'物販'},
+    {key:'q2',t:'在庫を持ったり梱包・発送をするのは大丈夫？',h:'1=できれば避けたい / 5=抵抗はない',section:'物販'},
+    {key:'q8',t:'早く現金化できることはどれくらい大事？',h:'1=急がない / 5=できるだけ早い方がよい',section:'物販'},
+    {key:'q17',t:'仕入れ先を探して交渉してみたい？',h:'1=消極的 / 5=積極的にやりたい',section:'物販'},
+    {key:'q18',t:'商品を探したり比べたりするのは続けられる？',h:'1=続かない / 5=楽しく続けられる',section:'物販'},
+    {key:'q19',t:'返品や問い合わせ対応はどのくらい平気？',h:'1=とても苦手 / 5=落ち着いて対応できる',section:'物販'},
+    {key:'q20',t:'海外ECや配送、関税の基礎知識はある？',h:'1=ほぼない / 5=基礎はある',section:'物販'},
     // MNP
-    {key:'q3',  t:'申し込み・契約・解約などの手続きをコツコツ進められる？', h:'1=苦手 / 5=得意・むしろ好き', section:'MNP'},
-    {key:'q6',  t:'店舗に行ったり電話で確認するのは平気？',               h:'1=できれば避けたい / 5=問題なくできる', section:'MNP'},
-    {key:'q14', t:'携帯料金やキャンペーンの仕組みに詳しい？',               h:'1=あまり詳しくない / 5=かなり詳しい', section:'MNP'},
-    {key:'q15', t:'店員さんや電話での交渉・確認は得意？',                   h:'1=苦手 / 5=得意', section:'MNP'},
-    {key:'q16', t:'特典の条件や期日を漏れなく管理できる？',                 h:'1=管理が苦手 / 5=得意で抜け漏れが少ない', section:'MNP'},
-
+    {key:'q3',t:'申し込み・契約・解約などの手続きをコツコツ進められる？',h:'1=苦手 / 5=得意・むしろ好き',section:'MNP'},
+    {key:'q6',t:'店舗に行ったり電話で確認するのは平気？',h:'1=できれば避けたい / 5=問題なくできる',section:'MNP'},
+    {key:'q14',t:'携帯料金やキャンペーンの仕組みに詳しい？',h:'1=あまり詳しくない / 5=かなり詳しい',section:'MNP'},
+    {key:'q15',t:'店員さんや電話での交渉・確認は得意？',h:'1=苦手 / 5=得意',section:'MNP'},
+    {key:'q16',t:'特典の条件や期日を漏れなく管理できる？',h:'1=管理が苦手 / 5=得意で抜け漏れが少ない',section:'MNP'},
     // 情報発信
-    {key:'q5',  t:'SNSやブログ・動画で継続して発信できる？',         h:'1=続かない / 5=毎日でもできる', section:'情報発信'},
-    {key:'q21', t:'撮影・編集・デザインなど制作スキルはどのくらい？', h:'1=ほぼない / 5=自信がある', section:'情報発信'},
-    {key:'q22', t:'顔出し・声出し・ライブ配信への抵抗は？',         h:'1=とても抵抗がある / 5=あまり抵抗がない', section:'情報発信'},
-    {key:'q24', t:'短時間でも毎日コツコツ発信を続けられる？',       h:'1=難しい / 5=できる', section:'情報発信'},
+    {key:'q5',t:'SNSやブログ・動画で継続して発信できる？',h:'1=続かない / 5=毎日でもできる',section:'情報発信'},
+    {key:'q21',t:'撮影・編集・デザインなど制作スキルはどのくらい？',h:'1=ほぼない / 5=自信がある',section:'情報発信'},
+    {key:'q22',t:'顔出し・声出し・ライブ配信への抵抗は？',h:'1=とても抵抗がある / 5=あまり抵抗がない',section:'情報発信'},
+    {key:'q24',t:'短時間でも毎日コツコツ発信を続けられる？',h:'1=難しい / 5=できる',section:'情報発信'},
   ];
   const QLABEL = Object.fromEntries(QDEF.map(q=>[q.key,q.t]));
 
-  // 既定ウェイト（フェイルセーフ。weights.json取得失敗時に使用）
-  const DEFAULT_WEIGHTS = {
-    q1:{FX:0.60,物販:1.00,MNP:0.30,情報発信:0.20}, q2:{FX:0.00,物販:1.00,MNP:0.00,情報発信:0.00},
-    q3:{FX:0.05,物販:0.30,MNP:1.00,情報発信:0.00}, q4:{FX:1.00,物販:0.20,MNP:0.20,情報発信:0.00},
-    q5:{FX:0.10,物販:0.10,MNP:0.10,情報発信:1.00}, q6:{FX:0.00,物販:0.40,MNP:1.00,情報発信:0.00},
-    q7:{FX:0.80,物販:0.10,MNP:0.30,情報発信:0.40}, q8:{FX:0.20,物販:0.80,MNP:0.60,情報発信:-0.40},
-    q9:{FX:0.80,物販:0.20,MNP:0.20,情報発信:0.70}, q10:{FX:0.90,物販:0.50,MNP:0.40,情報発信:0.20},
-    q11:{FX:0.90,物販:0.00,MNP:0.00,情報発信:0.10}, q12:{FX:1.00,物販:0.10,MNP:0.10,情報発信:0.10},
-    q13:{FX:0.60,物販:0.00,MNP:0.00,情報発信:0.00}, q14:{FX:0.00,物販:0.10,MNP:1.00,情報発信:0.00},
-    q15:{FX:0.00,物販:0.20,MNP:0.80,情報発信:0.00}, q16:{FX:0.00,物販:0.20,MNP:1.00,情報発信:0.00},
-    q17:{FX:0.00,物販:1.00,MNP:0.10,情報発信:0.00}, q18:{FX:0.00,物販:1.00,MNP:0.00,情報発信:0.20},
-    q19:{FX:0.00,物販:0.80,MNP:0.10,情報発信:0.00}, q20:{FX:0.00,物販:0.80,MNP:0.00,情報発信:0.20},
-    q21:{FX:0.00,物販:0.10,MNP:0.00,情報発信:1.00}, q22:{FX:0.00,物販:0.00,MNP:0.00,情報発信:0.80},
-    q24:{FX:0.00,物販:0.10,MNP:0.00,情報発信:1.00},
-  };
+  /* 既定ウェイト（フェイルセーフ） */
+  const DEFAULT_WEIGHTS = JSON.parse(document.getElementById('embedded-weights').textContent).weights;
 
   let state = load() || {
     light:true, advanced:false, debug:false, autosave:true,
-    answers: Object.fromEntries(QDEF.map(q=>[q.key,3])), // 初期値3で全部セット
+    answers: Object.fromEntries(QDEF.map(q=>[q.key,3])),
     weights: JSON.parse(JSON.stringify(DEFAULT_WEIGHTS)),
     remoteVersion: 0
   };
   let isAdmin = (localStorage.getItem('shd_admin') === '1');
 
-  // ===== 初期化 =====
+  /* ========== 初期化 ========== */
   (async function init(){
-    await loadRemoteConfig(); // 失敗しても続行（既定で動作）
-    renderQuestions();        // セクション＋Q連番
+    await loadRemoteConfig(); // 失敗→埋め込みへフォールバック
+    renderQuestions();
     mountOptionControls();
     buildWeightsTable();
     bindPublicEvents();
@@ -222,34 +236,63 @@
     renderAdminUI();
   })();
 
-  // ===== リモート設定（weights.json）=====
-  async function loadRemoteConfig(){
+  /* ===== weights.json ローダ（堅牢） ===== */
+  function getOverrideURL(){
     try{
-      const res = await fetch(REMOTE_CONFIG_URL, { cache:'no-store' });
-      if(!res.ok) throw new Error('HTTP ' + res.status);
-      const cfg = await res.json();
-      const remoteVer = (cfg && (cfg.configVersion ?? 0)) | 0;
-      if(cfg && cfg.weights && remoteVer >= (state.remoteVersion ?? 0)){
-        // 互換：q23があっても無視
-        if (cfg.weights.q23) delete cfg.weights.q23;
-        state.weights = Object.assign({}, state.weights, cfg.weights);
-        state.remoteVersion = remoteVer;
-        saveMaybe();
+      const url = new URL(location.href);
+      const q = url.searchParams.get('weights');
+      return q ? decodeURIComponent(q) : null;
+    }catch(_){ return null; }
+  }
+  function buildDefaultURL(){
+    const attr = root.dataset.weightsUrl || 'weights.json';
+    const ver = encodeURIComponent(REMOTE_VERSION || '1');
+    // 相対パスを安全に解決
+    const a = document.createElement('a');
+    a.href = attr;
+    return a.href + (a.href.includes('?') ? '&' : '?') + 'v=' + ver;
+  }
+  async function loadRemoteConfig(){
+    const tryUrls = [];
+    const ov = getOverrideURL();
+    if(ov) tryUrls.push(ov);
+    tryUrls.push(buildDefaultURL());
+
+    let lastErr = null;
+    for(const u of tryUrls){
+      try{
+        const res = await fetch(u, { cache:'no-store' });
+        if(!res.ok) throw new Error('HTTP ' + res.status + ' ' + u);
+        const cfg = await res.json(); // HTML返却ならここで例外
+        const remoteVer = (cfg && (cfg.configVersion ?? 0)) | 0;
+        if(cfg && cfg.weights){
+          if(cfg.weights.q23) delete cfg.weights.q23; // 互換
+          if(remoteVer >= (state.remoteVersion ?? 0)){
+            state.weights = Object.assign({}, state.weights, cfg.weights);
+            state.remoteVersion = remoteVer;
+            saveMaybe();
+          }
+        }
+        // 成功したらUIのリンク整備
+        $('#shdpro-admin-open-weights').setAttribute('href', u.replace(/\?v=.*/,''));
+        $('#shdpro-admin-version').textContent = `グローバル設定 v${state.remoteVersion ?? 0}（REMOTE_VERSION=${REMOTE_VERSION}）`;
+        return;
+      }catch(e){
+        lastErr = e;
       }
-      // リンク更新
-      $('#shdpro-admin-open-weights').setAttribute('href', REMOTE_CONFIG_URL.replace(/\?v=.*/,''));
-      $('#shdpro-admin-version').textContent = `グローバル設定 v${state.remoteVersion ?? 0}（REMOTE_VERSION=${REMOTE_VERSION}）`;
-    }catch(e){
+    }
+    // すべて失敗 → 埋め込みにフォールバック（ユーザーには非表示、管理者のみ通知）
+    if(isAdmin){
       const box = $('#shdpro-fatal');
       if(box){
         box.style.display = 'block';
-        box.textContent = 'グローバル設定の取得に失敗したため、内蔵の既定設定で動作しています（オフラインモード）。';
+        box.textContent = 'グローバル設定（weights.json）の取得に失敗したため、内蔵設定で動作中。URLまたは配置を確認してください。';
       }
-      console.warn('weights fetch error:', e);
+      console.warn('weights fetch error:', lastErr);
     }
   }
 
-  // ===== 設問DOM（ジャンル見出し＋Q連番）=====
+  /* ===== 画面描画 ===== */
   function renderQuestions(){
     const wrap = $('#shdpro-questions'); wrap.innerHTML = '';
     const sections = ['FX','物販','MNP','情報発信'];
@@ -274,7 +317,7 @@
     });
   }
 
-  // ===== イベント（一般）=====
+  /* ===== イベント ===== */
   function bindPublicEvents(){
     $('#shdpro-btn-diagnose').addEventListener('click', diagnose);
     $('#shdpro-btn-copy').addEventListener('click', copyAll);
@@ -289,7 +332,6 @@
     });
   }
 
-  // ===== 管理モード =====
   function bindAdminEvents(){
     $('#shdpro-admin-toggle-advanced').addEventListener('click', ()=>{
       state.advanced = !state.advanced; saveMaybe(); renderAdminUI();
@@ -302,18 +344,16 @@
       const payload = { configVersion: (state.remoteVersion|0) + 1, weights: state.weights };
       exportJSON(payload, 'weights.json');
     });
-    // 「weights.json を開く」は loadRemoteConfig() 内でhref設定
   }
 
   function bootAdmin(){
-    // URL ?admin=PIN
     const url = new URL(location.href);
     const qp = url.searchParams.get('admin');
     if(qp && qp === ADMIN_PIN){
       setAdmin(true);
       history.replaceState({}, '', location.pathname + location.search.replace(/([?&])admin=[^&]+&?/,'$1').replace(/[?&]$/,''));
     }
-    // スマホ向け：タイトル3連タップ（600ms以内）
+    // スマホ：タイトル3連タップ（600ms以内）
     const titleEl = $('.shdpro-title');
     let taps = 0, firstTs = 0, TAP_WINDOW = 600;
     titleEl.addEventListener('pointerdown', ()=>{
@@ -345,7 +385,7 @@
     if(ver){ ver.textContent = `グローバル設定 v${state.remoteVersion ?? 0}（REMOTE_VERSION=${REMOTE_VERSION}）`; }
   }
 
-  // ===== 1〜5ボタン =====
+  /* ===== 1〜5ボタン ===== */
   function mountOptionControls(){
     QDEF.forEach(q=>{
       const rootQ = document.querySelector(`.shdpro-q[data-key="${q.key}"]`);
@@ -366,7 +406,7 @@
     });
   }
 
-  // ===== 診断ロジック =====
+  /* ===== 診断ロジック／描画 ===== */
   function diagnose(){
     const ans = state.answers, W = state.weights;
     const maxTheo = Object.fromEntries(CAT.map(c=>[c,0]));
@@ -378,7 +418,7 @@
       CAT.forEach(c=>{
         const w = (W[q.key] && W[q.key][c]) || 0;
         raw[c] += w * v;
-        maxTheo[c] += w>=0 ? w*5 : w*1; // 正規化用
+        maxTheo[c] += w>=0 ? w*5 : w*1; // 正規化
         contrib[c] = w * v;
       });
       rows.push({q:q.key, v, contrib});
@@ -430,7 +470,7 @@
     }
   }
 
-  // ===== 高度な設定（重み編集）=====
+  /* ===== 高度な設定 ===== */
   function buildWeightsTable(){
     const tbl = $('#shdpro-weights-table'); tbl.innerHTML = '';
     const head = document.createElement('tr');
@@ -465,7 +505,7 @@
     $('#shdpro-file-import').addEventListener('change', onImportJSON);
   }
 
-  // ===== ユーティリティ =====
+  /* ===== ユーティリティ ===== */
   function copyAll(){
     const text = stripHtml($('#shdpro-summary').innerHTML) + "\n\n" + barsText();
     navigator.clipboard.writeText(text).then(()=> alert('結果をコピーしました。')).catch(()=> alert('コピーに失敗しました。'));
@@ -486,7 +526,7 @@
       try{
         const data = JSON.parse(reader.result);
         if(data.weights){
-          if(data.weights.q23) delete data.weights.q23; // 互換
+          if(data.weights.q23) delete data.weights.q23;
           state.weights = data.weights;
           buildWeightsTable(); saveMaybe(); alert('設定を読み込みました。');
         }
