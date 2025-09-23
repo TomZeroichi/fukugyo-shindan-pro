@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>副業適性 精密診断Pro（サロン仕様｜GitHub版）</title>
-<meta name="description" content="FX / 物販 / MNP / アフィリエイトの適性を23問でスコア化。『一番向いている／二番目に向いている』＋おすすめスタイルを表示。" />
+<title>副業適性 精密診断Pro（サロン仕様｜法人前提チェック対応）</title>
+<meta name="description" content="FX / 物販 / MNP / アフィリエイトの適性をスコア化。『一番向いている／二番目に向いている』＋おすすめスタイル（サロン仕様）を表示。" />
 <style>
 #shdpro-app, #shdpro-app * { box-sizing: border-box; }
 #shdpro-app {
@@ -43,7 +43,6 @@
 #shdpro-app .shdpro-bar { background:var(--chip); border:1px solid var(--border); border-radius:999px; position:relative; overflow:hidden; }
 #shdpro-app .shdpro-bar>span { display:block; height:var(--bar-h); background:linear-gradient(90deg,var(--accent-2),var(--accent)); }
 #shdpro-app .shdpro-bar .shdpro-bar-label { position:absolute; inset:0; display:flex; align-items:center; justify-content:space-between; padding:0 12px; font-size:12px; min-height:var(--bar-h); }
-/* ラベル白＋％黒 */
 #shdpro-app .shdpro-bar .shdpro-bar-label { color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.45); }
 #shdpro-app .shdpro-bar .shdpro-bar-label span:last-child { color:#000; text-shadow:none; }
 
@@ -59,13 +58,12 @@
 </head>
 <body>
 
-<!-- data-remote-version はキャッシュ更新用。数字を上げると weights.json を再取得します -->
-<div id="shdpro-app" class="is-light" data-admin-pin="1357" data-remote-version="5" data-weights-url="weights.json">
+<!-- data-remote-version はキャッシュ更新用。数字を上げると weights.json を再取得 -->
+<div id="shdpro-app" class="is-light" data-admin-pin="1357" data-remote-version="6" data-weights-url="weights.json">
   <div class="shdpro-wrap">
-    <!-- ヘッダー -->
     <div class="shdpro-card" style="background:linear-gradient(135deg, rgba(38,99,235,.06), rgba(42,161,152,.05));">
       <div class="shdpro-title">副業適性 精密診断Pro（有料会員）</div>
-      <div class="shdpro-sub">1〜5のタップ回答で <b>FX / 物販 / MNP / アフィリエイト</b> のスコアを算出し、「一番向いている」を提案します。※参考情報です。最終判断はご自身で。</div>
+      <div class="shdpro-sub">1〜5のタップ回答で <b>FX / 物販 / MNP / アフィリエイト</b> の適性を算出し、「一番向いている」を提案します。※参考情報です。</div>
       <div class="shdpro-controls">
         <button class="shdpro-btn outline" id="shdpro-btn-print">印刷 / PDF保存</button>
         <button class="shdpro-btn outline" id="shdpro-btn-copy">結果をコピー</button>
@@ -74,7 +72,7 @@
       <div id="shdpro-fatal" role="alert" aria-live="polite"></div>
     </div>
 
-    <!-- 管理リボン（PINで解放） -->
+    <!-- 管理リボン -->
     <div id="shdpro-admin-ribbon" class="shdpro-card" style="display:none;">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
         <b>管理者モード</b>
@@ -89,7 +87,7 @@
       </div>
     </div>
 
-    <!-- 設問（ジャンル別セクション＋Q連番） -->
+    <!-- 設問 -->
     <div class="shdpro-card">
       <div id="shdpro-questions" class="shdpro-row"></div>
       <div class="shdpro-footer" style="justify-content:center;">
@@ -115,7 +113,7 @@
       <div id="shdpro-debug" style="display:none; margin-top:12px;" class="shdpro-sub"></div>
     </div>
 
-    <!-- 高度な設定（管理者のみ） -->
+    <!-- 高度な設定 -->
     <div class="shdpro-card" id="shdpro-advanced-box" style="display:none;">
       <details open>
         <summary>スコア重み（上級者向け）</summary>
@@ -136,7 +134,7 @@
 
 <!-- フォールバック（空の器。weights.json で上書き） -->
 <script type="application/json" id="embedded-weights">
-{ "configVersion": 5, "weights": {}, "subtypes": {} }
+{ "configVersion": 6, "weights": {}, "subtypes": {} }
 </script>
 
 <script>
@@ -146,37 +144,38 @@
   const $$ = (s, c=document) => Array.from(c.querySelectorAll(s));
   const ADMIN_PIN  = root.dataset.adminPin || '1357';
   const REMOTE_VERSION = root.dataset.remoteVersion || '1';
-  const STORE_KEY  = 'shdpro_gh_v3_state';
+  const STORE_KEY  = 'shdpro_gh_v4_state';
   const CAT = ['FX','物販','MNP','アフィリエイト'];
 
-  /* 設問（初心者向け表現・q23無し） */
+  /* 設問（q23無し＋q25追加） */
   const QDEF = [
-    // FX（サロン方針に合わせた汎用質問で判定）
-    {key:'q4',  t:'価格が上下しても落ち着いていられる？',         h:'1=少しの上下でも不安になる / 5=変動を見ても落ち着いて判断できる', section:'FX'},
-    {key:'q7',  t:'ツールや自動化で作業を楽にしたい？',             h:'1=あまり使わない / 5=積極的に使いたい', section:'FX'},
-    {key:'q9',  t:'毎週どれくらい学習や検証に時間を使える？',       h:'1=ほとんど取れない（〜2時間） / 5=たっぷり取れる（15時間以上）', section:'FX'},
-    {key:'q10', t:'お金の増減にどのくらい耐えられる？',             h:'1=ほとんどリスクは取りたくない / 5=ある程度の上下は大丈夫', section:'FX'},
-    {key:'q11', t:'チャートを見て分析するのは得意？',               h:'1=苦手・興味が薄い / 5=好き・深く理解したい', section:'FX'},
-    {key:'q12', t:'損切りや資金管理など、決めたルールを守れる？',   h:'1=ルールが続かない / 5=きっちり守れる', section:'FX'},
-    {key:'q13', t:'保有中のポジションを翌日まで持ち越しても平気？', h:'1=無理 / 5=問題ない', section:'FX'},
+    // FX
+    {key:'q4',  t:'価格が上下しても落ち着いていられる？',           h:'1=少しの上下でも不安 / 5=落ち着いて判断できる', section:'FX'},
+    {key:'q7',  t:'ツールや自動化で作業を楽にしたい？',               h:'1=あまり使わない / 5=積極的に使いたい', section:'FX'},
+    {key:'q9',  t:'毎週どれくらい学習や検証に時間を使える？',         h:'1=ほとんど取れない / 5=15時間以上でもOK', section:'FX'},
+    {key:'q10', t:'お金の増減にどのくらい耐えられる？',               h:'1=上下はほぼ無理 / 5=ある程度の上下は大丈夫', section:'FX'},
+    {key:'q11', t:'チャートを見て分析するのは得意？',                 h:'1=苦手 / 5=好きで深く理解したい', section:'FX'},
+    {key:'q12', t:'損切りや資金管理など、決めたルールを守れる？',     h:'1=続かない / 5=きっちり守れる', section:'FX'},
+    {key:'q13', t:'ポジションを翌日まで持ち越しても平気？',           h:'1=無理 / 5=問題ない', section:'FX'},
 
     // 物販
-    {key:'q1',  t:'最初に使える予算は用意できる？',                 h:'1=ほぼゼロ / 5=十分に用意できる', section:'物販'},
-    {key:'q2',  t:'在庫を持ったり梱包・発送をするのは大丈夫？',     h:'1=できれば避けたい / 5=抵抗はない', section:'物販'},
-    {key:'q8',  t:'早く現金化できることはどれくらい大事？',         h:'1=急がない / 5=できるだけ早い方がよい', section:'物販'},
-    {key:'q17', t:'仕入れ先を探して交渉してみたい？',               h:'1=消極的 / 5=積極的にやりたい', section:'物販'},
-    {key:'q18', t:'商品を探したり比べたりするのは続けられる？',     h:'1=続かない / 5=楽しく続けられる', section:'物販'},
-    {key:'q19', t:'返品や問い合わせ対応はどのくらい平気？',         h:'1=とても苦手 / 5=落ち着いて対応できる', section:'物販'},
-    {key:'q20', t:'海外ECや配送、関税の基礎知識はある？',           h:'1=ほぼない / 5=基礎はある', section:'物販'},
+    {key:'q1',  t:'最初に使える予算は用意できる？',                   h:'1=ほぼゼロ / 5=十分に用意できる', section:'物販'},
+    {key:'q2',  t:'在庫を持ったり梱包・発送をするのは大丈夫？',       h:'1=避けたい / 5=抵抗はない', section:'物販'},
+    {key:'q8',  t:'早く現金化できることはどれくらい大事？',           h:'1=急がない / 5=できるだけ早い方がよい', section:'物販'},
+    {key:'q17', t:'仕入れ先を探して交渉してみたい？',                 h:'1=消極的 / 5=積極的にやりたい', section:'物販'},
+    {key:'q18', t:'リサーチ（商品探し）を継続できる？',               h:'1=続かない / 5=楽しく続けられる', section:'物販'},
+    {key:'q19', t:'返品や問い合わせ対応はどのくらい平気？',           h:'1=とても苦手 / 5=落ち着いて対応できる', section:'物販'},
+    {key:'q20', t:'海外ECや配送、関税の基礎知識はある？',             h:'1=ほぼない / 5=基礎はある', section:'物販'},
 
-    // MNP（店舗中心・法人契約やTikTok相性も考慮）
+    // MNP
     {key:'q3',  t:'申し込み・契約・解約などの手続きをコツコツ進められる？', h:'1=苦手 / 5=得意・むしろ好き', section:'MNP'},
-    {key:'q6',  t:'店舗に行ったり電話で確認するのは平気？',               h:'1=できれば避けたい / 5=問題なくできる', section:'MNP'},
-    {key:'q14', t:'携帯料金やキャンペーンの仕組みに詳しい？',               h:'1=あまり詳しくない / 5=かなり詳しい', section:'MNP'},
-    {key:'q15', t:'店員さんや電話での交渉・確認は得意？',                   h:'1=苦手 / 5=得意', section:'MNP'},
-    {key:'q16', t:'特典の条件や期日を漏れなく管理できる？',                 h:'1=管理が苦手 / 5=得意で抜け漏れが少ない', section:'MNP'},
+    {key:'q6',  t:'店舗に行ったり電話で確認するのは平気？',                 h:'1=避けたい / 5=問題なくできる', section:'MNP'},
+    {key:'q14', t:'携帯料金やキャンペーンの仕組みに詳しい？',                 h:'1=あまり詳しくない / 5=かなり詳しい', section:'MNP'},
+    {key:'q15', t:'店員さんや電話での交渉・確認は得意？',                     h:'1=苦手 / 5=得意', section:'MNP'},
+    {key:'q16', t:'特典条件や期日を漏れなく管理できる？',                     h:'1=管理が苦手 / 5=抜け漏れが少ない', section:'MNP'},
+    {key:'q25', t:'あなたは個人事業主（開業届）または法人の代表者ですか？',  h:'1=いいえ / 3=準備中 / 5=はい', section:'MNP'},
 
-    // アフィリエイト（自己アフィリ＋サロン紹介が中心）
+    // アフィリエイト
     {key:'q5',  t:'紹介リンクや申込手順を分かりやすく案内できる？',    h:'1=説明が苦手 / 5=要点を簡潔に伝えられる', section:'アフィリエイト'},
     {key:'q21', t:'画像づくりや文章整えなど簡単な“見せ方”は？',       h:'1=ほぼできない / 5=慣れていて自信がある', section:'アフィリエイト'},
     {key:'q22', t:'知人への声がけやSNS告知など、軽い発信への抵抗は？', h:'1=かなり抵抗がある / 5=抵抗はほぼない', section:'アフィリエイト'},
@@ -371,30 +370,57 @@
           <div class="shdpro-bar-label"><b>${s.name}</b><span>${s.v}%</span></div>
         </div>`).join('');
       section.appendChild(bars);
+
       const HINT={
-        'ゴトー日トレード':'月6回の局面に集中。準備リスト化で負荷を最小化。',
-        '指標トレード':'発表後の一方向に限定。直前のEA停止と約定リスク管理。',
-        '両建てトレード':'建玉ヘッジの崩し方を手順化。理論を踏み外さないのが命。',
-        'EA（GOLD）':'経済指標前の停止ルールとドローダウン上限を先に決める。',
-        '店舗せどり（予約購入）':'量販店の予約カレンダーと買取相場の表を同期。',
-        '抽選購入':'申込テンプレと当落管理を自動化。プレ値は事前調査で判断。',
-        '電脳':'リサーチは検索式を型化。Keepaや価格履歴で再現性を。',
-        '無在庫':'在庫0の代わりにツール整備。出品→受注→仕入の流れを固定。',
-        'ポケカ':'新弾抽選と寝かし期間を分離。PSA10狙いは選定基準を固定。',
-        '店舗契約（個人）':'維持期間と回線管理をシート化。現地特典の差を拾う。',
-        '法人契約（複数回線）':'与信と回線枠の最適化。キャッシュフロー管理は厳密に。',
-        'TikTok自演招待':'維持中SIMで成果を積む。アカウント運用の衛生管理が肝。',
-        '家族・身内回線拡張':'支払いは自分、名義は家族で枠を拡張。管理は一元化。',
+        // FX（サロン仕様）
+        'ゴトー日トレード':'月6回のゴトー日に限定して狙う局面特化。準備リスト化で負荷を最小化。',
+        '指標トレード':'経済指標「発表後」の値動きに限定し瞬間を取る。直前のEA停止と約定管理を徹底。',
+        '両建てトレード':'理論上リスクを抑えつつ利益を積む型。ヘッジ→崩しの手順を固定化。',
+        'EA（GOLD）':'GOLD自動売買が前提。指標前の停止とDD上限・資金管理を先に定義。',
+
+        // 物販
+        '店舗せどり（予約購入）':'量販店の予約カレンダー×買取相場を同期。',
+        '抽選購入':'当落管理を自動化。プレ値は事前調査で判断。',
+        '電脳':'検索式を型化。価格履歴ツールで再現性。',
+        '無在庫':'在庫0の代わりにツール整備。出品→受注→仕入の運用を固定。',
+        'ポケカ':'新弾抽選・寝かしを分離。PSA10狙いは選定基準を固定。',
+
+        // MNP
+        '店舗契約（個人）':'維持期間・回線管理をシート化。現地特典の差を拾う。',
+        '法人契約（複数回線）':'与信と回線枠を最適化。キャッシュフロー管理は厳密に。',
+        'TikTok自演招待':'維持中SIMで成果を積む。アカウント衛生管理が肝。',
+        '家族・身内回線拡張':'支払いは自分に集約。名義は家族で枠拡張。',
         'MNP紹介（手数料）':'友人知人に最短ルートで案内。手数料条件は事前合意。',
-        '自己アフィリエイト':'まずは安全に初成果。手順メモをテンプレ化して再利用。',
-        'サロン紹介特化':'体験談→手順→Q&Aの順で簡潔に。リンクは必ず最後に。',
-        'ブログ/SEO紹介':'検索ニーズ1つに1記事。CTAは冒頭・中・末に配置。',
+
+        // アフィリ
+        '自己アフィリエイト':'まずは安全に初成果。手順テンプレで再利用。',
+        'サロン紹介特化':'体験談→手順→Q&Aの順で簡潔に。リンクは最後に。',
+        'ブログ/SEO紹介':'1記事1ニーズ。CTAは冒頭・中・末に配置。',
         'SNSショート紹介':'一本＝一メッセージ。週3本でも複利で効く。',
-        '口コミ/対面紹介':'相手の悩みを先に聞く→一言で提案→URL送付の三段構成。'
+        '口コミ/対面紹介':'悩み把握→一言提案→URL送付の三段構成。'
       };
       const top1=subs[0]; const p=document.createElement('p'); p.className='shdpro-sub'; p.style.marginTop='4px';
       p.textContent=`まずは「${top1.name}」から始めるのが良さそう。${HINT[top1.name]||''}`;
-      section.appendChild(p); host.appendChild(section);
+      section.appendChild(p);
+
+      // ★ 法人前提チェック（Q25）
+      const q25 = (state.answers['q25']||3);
+      const needsBiz = subs.some(s=> s.name.includes('法人契約'));
+      if(needsBiz){
+        const warn = document.createElement('p');
+        warn.className = 'shdpro-sub';
+        warn.style.marginTop = '4px';
+        if(q25 <= 2){
+          warn.innerHTML = '※ <b>法人契約は「個人事業主 or 法人代表」であることが前提</b>です。今は要件未満のため、まずは「店舗契約（個人）」などから始めるのがおすすめ。';
+        }else if(q25 === 3){
+          warn.textContent = '※ 法人契約の前提はほぼ満たせそうです。開業届・設立手続き完了で有利になります。';
+        }else{
+          warn.textContent = '※ 前提クリア済み（個人事業主/法人）。複数回線の枠設計と資金繰りを先につくりましょう。';
+        }
+        section.appendChild(warn);
+      }
+
+      host.appendChild(section);
     });
   }
 
@@ -419,7 +445,7 @@
     const hints = {
       FX:'ゴトー日/指標/両建て/EA（GOLD）など、局面特化とルール徹底で戦う設計。',
       物販:'予約・抽選・電脳・無在庫・ポケカの型で即金性と再現性を両立。',
-      MNP:'店舗中心。法人契約や家族回線で枠を拡張し、TikTok招待や紹介も活用。',
+      MNP:'店舗中心。法人/個人事業主なら枠拡張しやすい。TikTok招待や紹介も活用。',
       アフィリエイト:'自己アフィリ＆サロン紹介を主軸に、自分のペースで淡々と継続。'
     };
     $('#shdpro-summary').innerHTML =
