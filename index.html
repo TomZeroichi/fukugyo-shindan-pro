@@ -3,10 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>副業適性 精密診断Pro（アフィリエイト対応｜GitHub版）</title>
+<title>副業適性 精密診断Pro（サロン仕様｜GitHub版）</title>
 <meta name="description" content="FX / 物販 / MNP / アフィリエイトの適性を23問でスコア化。『一番向いている／二番目に向いている』＋おすすめスタイルを表示。" />
 <style>
-/* ===== スコープ付きスタイル ===== */
 #shdpro-app, #shdpro-app * { box-sizing: border-box; }
 #shdpro-app {
   --card:#ffffff; --muted:#4b5563; --ink:#0b1020;
@@ -38,13 +37,13 @@
 
 #shdpro-app .shdpro-sec-title { margin:8px 0 0; font-weight:800; font-size:15px; color:var(--accent-2); border-left:4px solid var(--accent-2); padding-left:8px; }
 
-/* バー（太め＝文字とのクリアランス確保） */
+/* バー（太め） */
 #shdpro-app { --bar-h: 26px; }
 #shdpro-app .shdpro-bars { display:grid; gap:10px; margin-top:6px; }
 #shdpro-app .shdpro-bar { background:var(--chip); border:1px solid var(--border); border-radius:999px; position:relative; overflow:hidden; }
 #shdpro-app .shdpro-bar>span { display:block; height:var(--bar-h); background:linear-gradient(90deg,var(--accent-2),var(--accent)); }
 #shdpro-app .shdpro-bar .shdpro-bar-label { position:absolute; inset:0; display:flex; align-items:center; justify-content:space-between; padding:0 12px; font-size:12px; min-height:var(--bar-h); }
-/* ラベル白＋％黒（仕様） */
+/* ラベル白＋％黒 */
 #shdpro-app .shdpro-bar .shdpro-bar-label { color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.45); }
 #shdpro-app .shdpro-bar .shdpro-bar-label span:last-child { color:#000; text-shadow:none; }
 
@@ -61,7 +60,7 @@
 <body>
 
 <!-- data-remote-version はキャッシュ更新用。数字を上げると weights.json を再取得します -->
-<div id="shdpro-app" class="is-light" data-admin-pin="1357" data-remote-version="4" data-weights-url="weights.json">
+<div id="shdpro-app" class="is-light" data-admin-pin="1357" data-remote-version="5" data-weights-url="weights.json">
   <div class="shdpro-wrap">
     <!-- ヘッダー -->
     <div class="shdpro-card" style="background:linear-gradient(135deg, rgba(38,99,235,.06), rgba(42,161,152,.05));">
@@ -135,32 +134,24 @@
   </div>
 </div>
 
-<!-- フォールバック用：埋め込みweights（管理者にのみ失敗メッセージを表示） -->
+<!-- フォールバック（空の器。weights.json で上書き） -->
 <script type="application/json" id="embedded-weights">
-{
-  "configVersion": 4,
-  "weights": {},
-  "subtypes": {}
-}
+{ "configVersion": 5, "weights": {}, "subtypes": {} }
 </script>
 
 <script>
 (function(){
-  const root = document.getElementById('shdpro-app');
-  if(!root) return;
-
+  const root = document.getElementById('shdpro-app'); if(!root) return;
   const $  = (s, c=document) => c.querySelector(s);
   const $$ = (s, c=document) => Array.from(c.querySelectorAll(s));
-
   const ADMIN_PIN  = root.dataset.adminPin || '1357';
   const REMOTE_VERSION = root.dataset.remoteVersion || '1';
-  const STORE_KEY  = 'shdpro_gh_v2_state';
-
+  const STORE_KEY  = 'shdpro_gh_v3_state';
   const CAT = ['FX','物販','MNP','アフィリエイト'];
 
-  /* ========== 設問（初心者向け表現・q23無し） ========== */
+  /* 設問（初心者向け表現・q23無し） */
   const QDEF = [
-    // FX
+    // FX（サロン方針に合わせた汎用質問で判定）
     {key:'q4',  t:'価格が上下しても落ち着いていられる？',         h:'1=少しの上下でも不安になる / 5=変動を見ても落ち着いて判断できる', section:'FX'},
     {key:'q7',  t:'ツールや自動化で作業を楽にしたい？',             h:'1=あまり使わない / 5=積極的に使いたい', section:'FX'},
     {key:'q9',  t:'毎週どれくらい学習や検証に時間を使える？',       h:'1=ほとんど取れない（〜2時間） / 5=たっぷり取れる（15時間以上）', section:'FX'},
@@ -178,14 +169,14 @@
     {key:'q19', t:'返品や問い合わせ対応はどのくらい平気？',         h:'1=とても苦手 / 5=落ち着いて対応できる', section:'物販'},
     {key:'q20', t:'海外ECや配送、関税の基礎知識はある？',           h:'1=ほぼない / 5=基礎はある', section:'物販'},
 
-    // MNP
+    // MNP（店舗中心・法人契約やTikTok相性も考慮）
     {key:'q3',  t:'申し込み・契約・解約などの手続きをコツコツ進められる？', h:'1=苦手 / 5=得意・むしろ好き', section:'MNP'},
     {key:'q6',  t:'店舗に行ったり電話で確認するのは平気？',               h:'1=できれば避けたい / 5=問題なくできる', section:'MNP'},
     {key:'q14', t:'携帯料金やキャンペーンの仕組みに詳しい？',               h:'1=あまり詳しくない / 5=かなり詳しい', section:'MNP'},
     {key:'q15', t:'店員さんや電話での交渉・確認は得意？',                   h:'1=苦手 / 5=得意', section:'MNP'},
     {key:'q16', t:'特典の条件や期日を漏れなく管理できる？',                 h:'1=管理が苦手 / 5=得意で抜け漏れが少ない', section:'MNP'},
 
-    // アフィリエイト（自己アフィリ・当サロン紹介を想定）
+    // アフィリエイト（自己アフィリ＋サロン紹介が中心）
     {key:'q5',  t:'紹介リンクや申込手順を分かりやすく案内できる？',    h:'1=説明が苦手 / 5=要点を簡潔に伝えられる', section:'アフィリエイト'},
     {key:'q21', t:'画像づくりや文章整えなど簡単な“見せ方”は？',       h:'1=ほぼできない / 5=慣れていて自信がある', section:'アフィリエイト'},
     {key:'q22', t:'知人への声がけやSNS告知など、軽い発信への抵抗は？', h:'1=かなり抵抗がある / 5=抵抗はほぼない', section:'アフィリエイト'},
@@ -193,7 +184,6 @@
   ];
   const QLABEL = Object.fromEntries(QDEF.map(q=>[q.key,q.t]));
 
-  // 埋め込みフォールバック（空でロードし、weights.json で上書き）
   const EMBED = JSON.parse(document.getElementById('embedded-weights').textContent);
   let DEFAULT_WEIGHTS = {};   // メイン重み
   let SUB_WEIGHTS = {};       // サブタイプ重み
@@ -206,20 +196,13 @@
   };
   let isAdmin = (localStorage.getItem('shd_admin') === '1');
 
-  /* ========== 初期化 ========== */
   (async function init(){
-    await loadRemoteConfig();          // weights.json を取り込み（失敗でも続行）
-    renderQuestions();                 // Q1〜連番・ジャンル別
-    mountOptionControls();
-    buildWeightsTable();               // メイン重み編集（管理）
-    bindPublicEvents();
-    bindAdminEvents();
-    bootAdmin();
-    diagnose();                        // 初回描画
-    renderAdminUI();
+    await loadRemoteConfig();
+    renderQuestions(); mountOptionControls();
+    buildWeightsTable(); bindPublicEvents(); bindAdminEvents();
+    bootAdmin(); diagnose(); renderAdminUI();
   })();
 
-  /* ===== weights.json ロード（堅牢） ===== */
   function buildDefaultURL(){
     const attr = root.dataset.weightsUrl || 'weights.json';
     const a = document.createElement('a'); a.href = attr;
@@ -227,64 +210,35 @@
     return a.href + (a.href.includes('?') ? '&' : '?') + 'v=' + ver;
   }
   async function loadRemoteConfig(){
-    // 初期は埋め込み（空）のまま
     DEFAULT_WEIGHTS = EMBED.weights || {};
     SUB_WEIGHTS     = EMBED.subtypes || {};
-
     const url = buildDefaultURL();
     try{
       const res = await fetch(url, { cache:'no-store' });
       if(!res.ok) throw new Error('HTTP ' + res.status);
       const cfg = await res.json();
       const remoteVer = (cfg && (cfg.configVersion ?? 0)) | 0;
-
-      if(cfg && cfg.weights){
-        // 旧キーが残っていたら互換のため置換
-        // "情報発信" → "アフィリエイト"
-        for (const qk in cfg.weights){
-          if (cfg.weights[qk]['情報発信'] != null){
-            cfg.weights[qk]['アフィリエイト'] = cfg.weights[qk]['情報発信'];
-            delete cfg.weights[qk]['情報発信'];
-          }
-        }
-        DEFAULT_WEIGHTS = cfg.weights;
-      }
-      if(cfg && cfg.subtypes){
-        if (cfg.subtypes['情報発信']){
-          cfg.subtypes['アフィリエイト'] = cfg.subtypes['情報発信'];
-          delete cfg.subtypes['情報発信'];
-        }
-        SUB_WEIGHTS = cfg.subtypes;
-      }
-      state.weights = DEFAULT_WEIGHTS;
-      state.remoteVersion = remoteVer;
-      saveMaybe();
-
+      if(cfg && cfg.weights) DEFAULT_WEIGHTS = cfg.weights;
+      if(cfg && cfg.subtypes) SUB_WEIGHTS = cfg.subtypes;
+      state.weights = DEFAULT_WEIGHTS; state.remoteVersion = remoteVer; saveMaybe();
       $('#shdpro-admin-open-weights').setAttribute('href', url.replace(/\?v=.*/,''));
       $('#shdpro-admin-version').textContent = `グローバル設定 v${state.remoteVersion ?? 0}（REMOTE_VERSION=${REMOTE_VERSION}）`;
     }catch(err){
       if(isAdmin){
         const box = $('#shdpro-fatal');
-        if(box){
-          box.style.display = 'block';
-          box.textContent = 'グローバル設定（weights.json）の取得に失敗したため、内蔵設定で動作中。配置とURLを確認してください。';
-        }
+        if(box){ box.style.display = 'block'; box.textContent = 'weights.json の取得に失敗。内蔵設定で動作中。'; }
         console.warn('weights fetch error:', err);
       }
     }
   }
 
-  /* ===== 画面描画 ===== */
   function renderQuestions(){
     const wrap = $('#shdpro-questions'); wrap.innerHTML = '';
-    const sections = CAT;
-    let qnum = 1;
+    const sections = CAT; let qnum = 1;
     sections.forEach(sec=>{
       const secTitle = document.createElement('h3');
       secTitle.className = 'shdpro-sec-title';
-      secTitle.textContent = sec;
-      wrap.appendChild(secTitle);
-
+      secTitle.textContent = sec; wrap.appendChild(secTitle);
       QDEF.filter(q=>q.section===sec).forEach(q=>{
         const el = document.createElement('div');
         el.className = 'shdpro-q'; el.dataset.key = q.key;
@@ -293,13 +247,11 @@
           <small>${q.h}</small>
           <div class="shdpro-opts" role="radiogroup" aria-label="Q${qnum}. ${q.t}"></div>
           <div class="shdpro-labels"><span>低い/苦手</span><span>高い/得意</span></div>`;
-        wrap.appendChild(el);
-        qnum++;
+        wrap.appendChild(el); qnum++;
       });
     });
   }
 
-  /* ===== イベント（一般） ===== */
   function bindPublicEvents(){
     $('#shdpro-btn-diagnose').addEventListener('click', diagnose);
     $('#shdpro-btn-copy').addEventListener('click', copyAll);
@@ -314,7 +266,6 @@
     });
   }
 
-  /* ===== 管理モード ===== */
   function bindAdminEvents(){
     $('#shdpro-admin-toggle-advanced').addEventListener('click', ()=>{
       state.advanced = !state.advanced; saveMaybe(); renderAdminUI();
@@ -336,39 +287,23 @@
       setAdmin(true);
       history.replaceState({}, '', location.pathname + location.search.replace(/([?&])admin=[^&]+&?/,'$1').replace(/[?&]$/,''));
     }
-    // スマホ：タイトル3連タップ（600ms以内）
-    const titleEl = $('.shdpro-title');
-    let taps = 0, firstTs = 0, TAP_WINDOW = 600;
+    const titleEl = $('.shdpro-title'); let taps = 0, firstTs = 0, TAP_WINDOW = 600;
     titleEl.addEventListener('pointerdown', ()=>{
-      const now = Date.now();
-      if(!firstTs || now - firstTs > TAP_WINDOW){ firstTs = now; taps = 0; }
-      taps++;
-      if(taps >= 3 && (now - firstTs) <= TAP_WINDOW){
-        const pin = prompt('管理PINを入力');
-        if(pin === ADMIN_PIN) setAdmin(true);
-        taps = 0; firstTs = 0;
-      }
+      const now = Date.now(); if(!firstTs || now-firstTs>TAP_WINDOW){ firstTs=now; taps=0; }
+      taps++; if(taps>=3 && (now-firstTs)<=TAP_WINDOW){ const pin = prompt('管理PINを入力'); if(pin===ADMIN_PIN) setAdmin(true); taps=0; firstTs=0; }
     });
     if(isAdmin) renderAdminUI();
   }
-
-  function setAdmin(flag){
-    isAdmin = !!flag;
-    localStorage.setItem('shd_admin', isAdmin ? '1' : '0');
-    renderAdminUI();
-  }
-
+  function setAdmin(flag){ isAdmin=!!flag; localStorage.setItem('shd_admin', isAdmin ? '1' : '0'); renderAdminUI(); }
   function renderAdminUI(){
     const ribbon = $('#shdpro-admin-ribbon');
     ribbon.style.display = isAdmin ? 'block' : 'none';
     $('#shdpro-advanced-box').style.display = (isAdmin && state.advanced) ? 'block' : 'none';
     $('#shdpro-debug').style.display       = (isAdmin && state.debug)     ? 'block' : 'none';
     const dbg = $('#shdpro-admin-toggle-debug'); if(dbg) dbg.checked = !!state.debug;
-    const ver = $('#shdpro-admin-version');
-    if(ver){ ver.textContent = `グローバル設定 v${state.remoteVersion ?? 0}（REMOTE_VERSION=${REMOTE_VERSION}）`; }
+    const ver = $('#shdpro-admin-version'); if(ver){ ver.textContent = `グローバル設定 v${state.remoteVersion ?? 0}（REMOTE_VERSION=${REMOTE_VERSION}）`; }
   }
 
-  /* ===== 1〜5ボタン ===== */
   function mountOptionControls(){
     QDEF.forEach(q=>{
       const rootQ = document.querySelector(`.shdpro-q[data-key="${q.key}"]`);
@@ -389,37 +324,24 @@
     });
   }
 
-  /* ===== 診断ロジック ===== */
   function diagnose(){
     const ans = state.answers, W = state.weights;
     const maxTheo = Object.fromEntries(CAT.map(c=>[c,0]));
     const raw     = Object.fromEntries(CAT.map(c=>[c,0]));
     const rows = [];
-
     QDEF.forEach(q=>{
       const v = ans[q.key], contrib = {};
       CAT.forEach(c=>{
         const w = (W[q.key] && W[q.key][c]) || 0;
         raw[c] += w * v;
-        maxTheo[c] += w>=0 ? w*5 : w*1; // 正規化
+        maxTheo[c] += w>=0 ? w*5 : w*1;
         contrib[c] = w * v;
       });
       rows.push({q:q.key, v, contrib});
     });
-
-    const scores = {};
-    CAT.forEach(c=>{
-      let m = maxTheo[c]; if(m===0) m = 1;
-      let s = (raw[c] / m) * 100;
-      scores[c] = Math.max(0, Math.min(100, s));
-    });
-
-    renderBars(scores);
-    renderSubtypes(scores);   // ★ 細分化
-    renderSummary(scores, rows);
-
-    $('#shdpro-result-card').style.display = 'block';
-    saveMaybe();
+    const scores = {}; CAT.forEach(c=>{ let m=maxTheo[c]; if(m===0) m=1; let s=(raw[c]/m)*100; scores[c]=Math.max(0, Math.min(100, s)); });
+    renderBars(scores); renderSubtypes(scores); renderSummary(scores, rows);
+    $('#shdpro-result-card').style.display = 'block'; saveMaybe();
   }
 
   function renderBars(scores){
@@ -433,151 +355,124 @@
   }
 
   function renderSubtypes(mainScores){
-    const host = document.getElementById('shdpro-subtype-wrap');
-    if (!host) return;
+    const host = document.getElementById('shdpro-subtype-wrap'); if(!host) return;
     host.innerHTML = '';
-
-    const ranking = Object.entries(mainScores)
-      .map(([c,v]) => ({c, v:Math.round(v)}))
-      .sort((a,b)=> b.v - a.v);
+    const ranking = Object.entries(mainScores).map(([c,v])=>({c, v:Math.round(v)})).sort((a,b)=> b.v-a.v);
     const top = ranking[0], second = ranking[1];
-    const targets = [top].concat((second && top.v - second.v <= 5) ? [second] : []);
-
-    targets.forEach(t => {
-      const subs = scoreSubtypes(t.c);
-      if (!subs || subs.length === 0) return;
-
-      const section = document.createElement('div');
+    const targets = [top].concat((second && top.v-second.v<=5)?[second]:[]);
+    targets.forEach(t=>{
+      const subs = scoreSubtypes(t.c); if(!subs || subs.length===0) return;
+      const section=document.createElement('div');
       section.innerHTML = `<h4 class="shdpro-sec-title" style="margin-top:12px;">${t.c} のおすすめスタイル</h4>`;
-      const bars = document.createElement('div');
-      bars.className = 'shdpro-bars';
-      bars.innerHTML = subs.map(s =>
-        `<div class="shdpro-bar">
-           <span style="width:${s.v}%"></span>
-           <div class="shdpro-bar-label"><b>${s.name}</b><span>${s.v}%</span></div>
-         </div>`).join('');
+      const bars=document.createElement('div'); bars.className='shdpro-bars';
+      bars.innerHTML = subs.map(s=>`
+        <div class="shdpro-bar">
+          <span style="width:${s.v}%"></span>
+          <div class="shdpro-bar-label"><b>${s.name}</b><span>${s.v}%</span></div>
+        </div>`).join('');
       section.appendChild(bars);
-
-      const HINT = {
-        '自己アフィリエイト':'まずは申込動線をメモ化。安全に初成果を体験。',
-        'サロン紹介特化':'体験談と手順書をテンプレ化。案内は短く、リンクは長く。',
-        'ブログ/SEO紹介':'記事の型を固定化。検索ニーズに1記事1解決。',
-        'SNSショート紹介':'短尺で1メッセージ。週3本ペースでも積み上がる。',
-        '口コミ/対面紹介':'相手の悩みを聞いてから一言で提案。後でURL送付。'
+      const HINT={
+        'ゴトー日トレード':'月6回の局面に集中。準備リスト化で負荷を最小化。',
+        '指標トレード':'発表後の一方向に限定。直前のEA停止と約定リスク管理。',
+        '両建てトレード':'建玉ヘッジの崩し方を手順化。理論を踏み外さないのが命。',
+        'EA（GOLD）':'経済指標前の停止ルールとドローダウン上限を先に決める。',
+        '店舗せどり（予約購入）':'量販店の予約カレンダーと買取相場の表を同期。',
+        '抽選購入':'申込テンプレと当落管理を自動化。プレ値は事前調査で判断。',
+        '電脳':'リサーチは検索式を型化。Keepaや価格履歴で再現性を。',
+        '無在庫':'在庫0の代わりにツール整備。出品→受注→仕入の流れを固定。',
+        'ポケカ':'新弾抽選と寝かし期間を分離。PSA10狙いは選定基準を固定。',
+        '店舗契約（個人）':'維持期間と回線管理をシート化。現地特典の差を拾う。',
+        '法人契約（複数回線）':'与信と回線枠の最適化。キャッシュフロー管理は厳密に。',
+        'TikTok自演招待':'維持中SIMで成果を積む。アカウント運用の衛生管理が肝。',
+        '家族・身内回線拡張':'支払いは自分、名義は家族で枠を拡張。管理は一元化。',
+        'MNP紹介（手数料）':'友人知人に最短ルートで案内。手数料条件は事前合意。',
+        '自己アフィリエイト':'まずは安全に初成果。手順メモをテンプレ化して再利用。',
+        'サロン紹介特化':'体験談→手順→Q&Aの順で簡潔に。リンクは必ず最後に。',
+        'ブログ/SEO紹介':'検索ニーズ1つに1記事。CTAは冒頭・中・末に配置。',
+        'SNSショート紹介':'一本＝一メッセージ。週3本でも複利で効く。',
+        '口コミ/対面紹介':'相手の悩みを先に聞く→一言で提案→URL送付の三段構成。'
       };
-      const top1 = subs[0];
-      const p = document.createElement('p');
-      p.className = 'shdpro-sub';
-      p.style.marginTop = '4px';
-      p.textContent = `まずは「${top1.name}」から始めるのが良さそう。${HINT[top1.name] || ''}`;
-      section.appendChild(p);
-
-      host.appendChild(section);
+      const top1=subs[0]; const p=document.createElement('p'); p.className='shdpro-sub'; p.style.marginTop='4px';
+      p.textContent=`まずは「${top1.name}」から始めるのが良さそう。${HINT[top1.name]||''}`;
+      section.appendChild(p); host.appendChild(section);
     });
   }
 
   function scoreSubtypes(category){
-    const defs = SUB_WEIGHTS[category];
-    if (!defs) return null;
-
-    const items = Object.keys(defs).map(name => {
-      let raw = 0, maxTheo = 0;
-      const map = defs[name];
+    const defs = SUB_WEIGHTS[category]; if(!defs) return null;
+    const items = Object.keys(defs).map(name=>{
+      let raw=0, maxTheo=0; const map=defs[name];
       Object.keys(map).forEach(qk=>{
-        const w = map[qk] || 0;
-        const v = state.answers[qk] || 3;
-        raw += w * v;
-        maxTheo += w >= 0 ? w * 5 : w * 1;
+        const w=map[qk]||0; const v=state.answers[qk]||3;
+        raw += w*v; maxTheo += w>=0 ? w*5 : w*1;
       });
-      if (maxTheo === 0) maxTheo = 1;
-      let s = Math.max(0, Math.min(100, (raw / maxTheo) * 100));
-      return { name, v: Math.round(s) };
+      if(maxTheo===0) maxTheo=1;
+      let s=Math.max(0, Math.min(100, (raw/maxTheo)*100));
+      return { name, v:Math.round(s) };
     });
-    return items.sort((a,b)=> b.v - a.v);
+    return items.sort((a,b)=> b.v-a.v);
   }
 
   function renderSummary(scores, rows){
-    const items = CAT.map(c=>({c, v:Math.round(scores[c])})).sort((a,b)=> b.v - a.v);
+    const items = CAT.map(c=>({c, v:Math.round(scores[c])})).sort((a,b)=> b.v-a.v);
     const top = items[0], second = items[1];
     const hints = {
-      FX:'資金・自動化・検証時間が活きる。価格変動への耐性が鍵。',
-      物販:'在庫/物流に前向きで即金性を狙いやすい。仕入れ基盤を作ると伸びる。',
-      MNP:'事務手続き耐性と現地調査力が強み。案件管理とキャッシュフロー設計が肝。',
-      アフィリエイト:'自己アフィリ＆当サロン紹介から着手。自分のペースで淡々と積み上げ。'
+      FX:'ゴトー日/指標/両建て/EA（GOLD）など、局面特化とルール徹底で戦う設計。',
+      物販:'予約・抽選・電脳・無在庫・ポケカの型で即金性と再現性を両立。',
+      MNP:'店舗中心。法人契約や家族回線で枠を拡張し、TikTok招待や紹介も活用。',
+      アフィリエイト:'自己アフィリ＆サロン紹介を主軸に、自分のペースで淡々と継続。'
     };
     $('#shdpro-summary').innerHTML =
       `あなたに<b>一番向いている</b>のは <b>${top.c}</b>（${top.v}%）。` +
       (second && (top.v-second.v)<=5 ? `続いて<b>二番目に向いている</b>のは <b>${second.c}</b>（${second.v}%）。` : '') +
       `<br>示唆：${hints[top.c]}`;
+
     if(state.debug && isAdmin){
       let html = '<h4>診断ロジック詳細</h4><table><tr><th>設問</th>' + CAT.map(c=>`<th>${c}</th>`).join('') + '</tr>';
       rows.forEach(r=>{
         html += `<tr><td>${QLABEL[r.q]}（${r.q} / v=${r.v}）</td>` + CAT.map(c=>`<td>${(r.contrib[c]||0).toFixed(2)}</td>`).join('') + '</tr>';
       });
-      html += '</table>';
-      $('#shdpro-debug').innerHTML = html;
+      html += '</table>'; $('#shdpro-debug').innerHTML = html;
     }
   }
 
-  /* ===== 高度な設定 ===== */
   function buildWeightsTable(){
     const tbl = $('#shdpro-weights-table'); tbl.innerHTML = '';
-    const head = document.createElement('tr');
-    head.innerHTML = `<th>設問</th>${CAT.map(c=>`<th>${c}</th>`).join('')}`;
-    tbl.appendChild(head);
-
+    const head = document.createElement('tr'); head.innerHTML = `<th>設問</th>${CAT.map(c=>`<th>${c}</th>`).join('')}`; tbl.appendChild(head);
     QDEF.forEach(q=>{
-      if(!state.weights[q.key]){
-        state.weights[q.key] = Object.fromEntries(CAT.map(c=>[c,0]));
-      }
-      const tr = document.createElement('tr');
-      tr.innerHTML =
-        `<th>${q.key}：${q.t}</th>` +
-        CAT.map(c=>`<td><input data-q="${q.key}" data-cat="${c}" type="number" step="0.05" min="-1" max="1" value="${state.weights[q.key][c] ?? 0}" style="width:90px;"></td>`).join('');
+      if(!state.weights[q.key]) state.weights[q.key] = Object.fromEntries(CAT.map(c=>[c,0]));
+      const tr=document.createElement('tr');
+      tr.innerHTML = `<th>${q.key}：${q.t}</th>` + CAT.map(c=>`<td><input data-q="${q.key}" data-cat="${c}" type="number" step="0.05" min="-1" max="1" value="${state.weights[q.key][c] ?? 0}" style="width:90px;"></td>`).join('');
       tbl.appendChild(tr);
     });
-
     $$('#shdpro-weights-table input').forEach(inp=> inp.addEventListener('input', e=>{
-      const q = e.target.getAttribute('data-q');
-      const c = e.target.getAttribute('data-cat');
-      let v = parseFloat(e.target.value || '0'); if(isNaN(v)) v = 0;
-      v = Math.max(-1, Math.min(1, v)); e.target.value = v.toFixed(2);
-      state.weights[q][c] = v; saveMaybe();
+      const q=e.target.getAttribute('data-q'); const c=e.target.getAttribute('data-cat');
+      let v=parseFloat(e.target.value||'0'); if(isNaN(v)) v=0; v=Math.max(-1, Math.min(1, v)); e.target.value=v.toFixed(2);
+      state.weights[q][c]=v; saveMaybe();
     }));
-
     $('#shdpro-btn-weights-reset').addEventListener('click', ()=>{
-      state.weights = JSON.parse(JSON.stringify(DEFAULT_WEIGHTS));
-      buildWeightsTable(); saveMaybe();
+      state.weights = JSON.parse(JSON.stringify(DEFAULT_WEIGHTS)); buildWeightsTable(); saveMaybe();
     });
-
     $('#shdpro-btn-export').addEventListener('click', ()=> exportJSON({weights:state.weights, subtypes:SUB_WEIGHTS}, 'shd_settings.json') );
     $('#shdpro-file-import').addEventListener('change', onImportJSON);
   }
 
-  /* ===== ユーティリティ ===== */
   function copyAll(){
     const text = stripHtml($('#shdpro-summary').innerHTML) + "\n\n" + barsText();
     navigator.clipboard.writeText(text).then(()=> alert('結果をコピーしました。')).catch(()=> alert('コピーに失敗しました。'));
   }
   function barsText(){ return $$('#shdpro-bars .shdpro-bar').map(bar=> $('.shdpro-bar-label', bar).innerText.trim()).join('\n'); }
   function stripHtml(html){ const div=document.createElement('div'); div.innerHTML=html; return div.textContent||div.innerText||''; }
-  function exportJSON(obj, filename){ const blob = new Blob([JSON.stringify(obj, null, 2)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url); }
+  function exportJSON(obj, filename){ const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; a.click(); URL.revokeObjectURL(url); }
   function onImportJSON(e){
-    const f = e.target.files[0]; if(!f) return;
-    const reader = new FileReader();
-    reader.onload = ()=>{
-      try{
-        const data = JSON.parse(reader.result);
-        if(data.weights){ state.weights = data.weights; }
-        if(data.subtypes){ SUB_WEIGHTS = data.subtypes; }
-        buildWeightsTable(); saveMaybe(); alert('設定を読み込みました。');
-      }catch(err){ alert('JSONの読み込みに失敗しました。'); }
-    };
+    const f=e.target.files[0]; if(!f) return;
+    const reader=new FileReader();
+    reader.onload=()=>{ try{ const data=JSON.parse(reader.result); if(data.weights){state.weights=data.weights;} if(data.subtypes){SUB_WEIGHTS=data.subtypes;} buildWeightsTable(); saveMaybe(); alert('設定を読み込みました。'); }catch(_){ alert('JSONの読み込みに失敗しました。'); } };
     reader.readAsText(f);
   }
   function hideResults(){ $('#shdpro-result-card').style.display='none'; }
   function saveMaybe(){ if(state.autosave){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); } }
-  function load(){ try{ const s = localStorage.getItem(STORE_KEY); return s? JSON.parse(s): null; }catch(e){ return null; } }
+  function load(){ try{ const s=localStorage.getItem(STORE_KEY); return s?JSON.parse(s):null; }catch(_){ return null; } }
 })();
 </script>
 </body>
