@@ -3,71 +3,67 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>副業適性 精密診断Pro（サロン仕様｜法人前提チェック対応）</title>
-<meta name="description" content="FX / 物販 / MNP / アフィリエイトの適性をスコア化。『一番向いている／二番目に向いている』＋おすすめスタイル（サロン仕様）を表示。" />
+<title>副業適性 精密診断Pro（MNP・TickTok自演招待・物販細分化・FX）</title>
+<meta name="description" content="MNP / TickTok（自演招待） / 物販（抽選・電脳・無在庫・ポケカ/PSAほか細分化） / FX の適性をスコア化。『一番向いている／二番目に向いている』＋おすすめスタイルを表示。診断前の要約は空。">
 <style>
 #shdpro-app, #shdpro-app * { box-sizing: border-box; }
 #shdpro-app {
   --card:#ffffff; --muted:#4b5563; --ink:#0b1020;
   --accent:#0ea5e9; --accent-2:#2563eb; --border:#e5e7eb;
   --chip:#f3f4f6; --shadow:0 6px 20px rgba(0,0,0,.12);
-  color:var(--ink);
-  font-family: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,
-    "Hiragino Kaku Gothic ProN","Yu Gothic UI","Noto Sans JP","Meiryo",sans-serif;
-  background:#eef3f8; padding: 2px;
+  color:var(--ink); background:#eef3f8; padding:2px;
+  --bar-h:26px;
 }
-#shdpro-app .shdpro-wrap { max-width:720px; margin:18px auto 60px; padding:0 14px; }
-#shdpro-app .shdpro-title { font-weight:800; letter-spacing:.02em; font-size:clamp(22px,3.4vw,32px); margin:2px 0 10px; }
-#shdpro-app .shdpro-sub { color:var(--muted); font-size:13px; margin-bottom:16px; }
-#shdpro-app .shdpro-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:14px; margin:12px 0; box-shadow:var(--shadow); }
-#shdpro-app .shdpro-row { display:grid; grid-template-columns:1fr; gap:12px; }
-#shdpro-app .shdpro-controls { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-#shdpro-app .shdpro-btn { cursor:pointer; background:linear-gradient(180deg,var(--accent),var(--accent-2)); color:#fff; border:0; border-radius:11px; padding:10px 14px; font-weight:700; font-size:14px; box-shadow:0 6px 12px rgba(0,0,0,.15); }
-#shdpro-app .shdpro-btn.outline { background:transparent; color:var(--ink); border:1px solid var(--border); }
-#shdpro-app .shdpro-chip { display:inline-flex; align-items:center; gap:6px; background:var(--chip); color:var(--muted); border:1px solid var(--border); border-radius:999px; padding:6px 10px; font-size:12px; }
+.shdpro-wrap { max-width:720px; margin:18px auto 60px; padding:0 14px; }
+.shdpro-title { font-weight:800; letter-spacing:.02em; font-size:clamp(22px,3.4vw,32px); margin:2px 0 10px; }
+.shdpro-sub { color:var(--muted); font-size:13px; margin-bottom:16px; }
+.shdpro-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:14px; margin:12px 0; box-shadow:var(--shadow); }
+.shdpro-row { display:grid; grid-template-columns:1fr; gap:12px; }
+.shdpro-controls { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+.shdpro-btn { cursor:pointer; background:linear-gradient(180deg,var(--accent),var(--accent-2)); color:#fff; border:0; border-radius:11px; padding:10px 14px; font-weight:700; font-size:14px; box-shadow:0 6px 12px rgba(0,0,0,.15); }
+.shdpro-btn.outline { background:transparent; color:var(--ink); border:1px solid var(--border); }
+.shdpro-chip { display:inline-flex; align-items:center; gap:6px; background:var(--chip); color:var(--muted); border:1px solid var(--border); border-radius:999px; padding:6px 10px; font-size:12px; }
 
-#shdpro-app .shdpro-q { display:grid; gap:6px; margin:10px 0 16px; }
-#shdpro-app .shdpro-q h4 { margin:0; font-size:14px; font-weight:800; }
-#shdpro-app .shdpro-q small { color:var(--muted); font-size:12px; }
-#shdpro-app .shdpro-labels { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); }
+.shdpro-q { display:grid; gap:6px; margin:10px 0 16px; }
+.shdpro-q h4 { margin:0; font-size:14px; font-weight:800; }
+.shdpro-q small { color:var(--muted); font-size:12px; }
+.shdpro-labels { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); }
+.shdpro-opts { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+.shdpro-opt { appearance:none; border:1px solid var(--border); background:var(--chip); color:var(--ink); border-radius:10px; padding:12px 0; font-weight:800; text-align:center; cursor:pointer; user-select:none; }
+.shdpro-opt[aria-checked="true"] { background:linear-gradient(180deg,var(--accent),var(--accent-2)); color:#fff; border-color:transparent; box-shadow:0 6px 12px rgba(0,0,0,.15); }
 
-#shdpro-app .shdpro-opts { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
-#shdpro-app .shdpro-opt { appearance:none; border:1px solid var(--border); background:var(--chip); color:var(--ink); border-radius:10px; padding:12px 0; font-weight:800; text-align:center; cursor:pointer; user-select:none; }
-#shdpro-app .shdpro-opt[aria-checked="true"] { background:linear-gradient(180deg,var(--accent),var(--accent-2)); color:#fff; border-color:transparent; box-shadow:0 6px 12px rgba(0,0,0,.15); }
+.shdpro-sec-title { margin:8px 0 0; font-weight:800; font-size:15px; color:var(--accent-2); border-left:4px solid var(--accent-2); padding-left:8px; }
 
-#shdpro-app .shdpro-sec-title { margin:8px 0 0; font-weight:800; font-size:15px; color:var(--accent-2); border-left:4px solid var(--accent-2); padding-left:8px; }
+.shdpro-bars { display:grid; gap:10px; margin-top:6px; }
+.shdpro-bar { background:var(--chip); border:1px solid var(--border); border-radius:999px; position:relative; overflow:hidden; }
+.shdpro-bar>span { display:block; height:var(--bar-h); background:linear-gradient(90deg,var(--accent-2),var(--accent)); }
+.shdpro-bar .shdpro-bar-label { position:absolute; inset:0; display:flex; align-items:center; justify-content:space-between; padding:0 12px; font-size:12px; min-height:var(--bar-h); color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.45); }
+.shdpro-bar .shdpro-bar-label span:last-child { color:#000; text-shadow:none; } /* ％は黒 */
 
-/* バー（太め） */
-#shdpro-app { --bar-h: 26px; }
-#shdpro-app .shdpro-bars { display:grid; gap:10px; margin-top:6px; }
-#shdpro-app .shdpro-bar { background:var(--chip); border:1px solid var(--border); border-radius:999px; position:relative; overflow:hidden; }
-#shdpro-app .shdpro-bar>span { display:block; height:var(--bar-h); background:linear-gradient(90deg,var(--accent-2),var(--accent)); }
-#shdpro-app .shdpro-bar .shdpro-bar-label { position:absolute; inset:0; display:flex; align-items:center; justify-content:space-between; padding:0 12px; font-size:12px; min-height:var(--bar-h); }
-#shdpro-app .shdpro-bar .shdpro-bar-label { color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.45); }
-#shdpro-app .shdpro-bar .shdpro-bar-label span:last-child { color:#000; text-shadow:none; }
+table { width:100%; border-collapse:collapse; }
+th, td { border:1px solid var(--border); padding:8px 10px; font-size:13px; vertical-align:top; }
+th { text-align:left; background:var(--chip); }
+.shdpro-footer { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; margin-top:8px; }
+.shdpro-center { text-align:center; }
 
-#shdpro-app table { width:100%; border-collapse:collapse; }
-#shdpro-app th, #shdpro-app td { border:1px solid var(--border); padding:8px 10px; font-size:13px; vertical-align:top; }
-#shdpro-app th { text-align:left; background:var(--chip); }
-#shdpro-app .shdpro-footer { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; margin-top:8px; }
-#shdpro-app .shdpro-center { text-align:center; }
-
-#shdpro-app #shdpro-fatal { display:none; background:#fff7cc; color:#4a3b00; border:1px solid #ffe38a; border-radius:12px; padding:10px; margin:12px 0; }
-#shdpro-app #shdpro-admin-ribbon { position:sticky; top:0; z-index:10; background:rgba(37,99,235,.06); border:1px dashed var(--border); border-radius:12px; padding:8px 12px; margin:12px 0; }
+#shdpro-fatal { display:none; background:#fff7cc; color:#4a3b00; border:1px solid #ffe38a; border-radius:12px; padding:10px; margin:12px 0; }
+#shdpro-admin-ribbon { position:sticky; top:0; z-index:10; background:rgba(37,99,235,.06); border:1px dashed var(--border); border-radius:12px; padding:8px 12px; margin:12px 0; }
 </style>
 </head>
 <body>
 
-<!-- data-remote-version はキャッシュ更新用。数字を上げると weights.json を再取得 -->
-<div id="shdpro-app" class="is-light" data-admin-pin="1357" data-remote-version="6" data-weights-url="weights.json">
+<!-- REMOTE_VERSION を上げると weights.json を確実に再取得 -->
+<div id="shdpro-app" data-admin-pin="1357" data-remote-version="11" data-weights-url="weights.json">
   <div class="shdpro-wrap">
+
+    <!-- ヘッダー -->
     <div class="shdpro-card" style="background:linear-gradient(135deg, rgba(38,99,235,.06), rgba(42,161,152,.05));">
-      <div class="shdpro-title">副業適性 精密診断Pro（有料会員）</div>
-      <div class="shdpro-sub">1〜5のタップ回答で <b>FX / 物販 / MNP / アフィリエイト</b> の適性を算出し、「一番向いている」を提案します。※参考情報です。</div>
+      <div class="shdpro-title">副業適性 精密診断Pro</div>
+      <div class="shdpro-sub">1〜5のタップ回答で <b>MNP / TickTok（自演招待） / 物販（細分化） / FX</b> のスコアを算出します。※参考情報です。</div>
       <div class="shdpro-controls">
-        <button class="shdpro-btn outline" id="shdpro-btn-print">印刷 / PDF保存</button>
-        <button class="shdpro-btn outline" id="shdpro-btn-copy">結果をコピー</button>
-        <button class="shdpro-btn outline" id="shdpro-btn-reset">一括リセット</button>
+        <button class="shdpro-btn outline" id="btn-print">印刷 / PDF保存</button>
+        <button class="shdpro-btn outline" id="btn-copy">結果をコピー</button>
+        <button class="shdpro-btn outline" id="btn-reset">一括リセット</button>
       </div>
       <div id="shdpro-fatal" role="alert" aria-live="polite"></div>
     </div>
@@ -76,65 +72,64 @@
     <div id="shdpro-admin-ribbon" class="shdpro-card" style="display:none;">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
         <b>管理者モード</b>
-        <small id="shdpro-admin-version" class="shdpro-sub" style="margin:0;"></small>
+        <small id="admin-version" class="shdpro-sub" style="margin:0;"></small>
       </div>
       <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <label class="shdpro-chip"><input type="checkbox" id="shdpro-admin-toggle-debug"> <span>ロジック表示</span></label>
-        <button class="shdpro-btn outline" id="shdpro-admin-toggle-advanced">高度な設定</button>
-        <button class="shdpro-btn outline" id="shdpro-admin-download-weights">公開用JSONをダウンロード</button>
-        <a class="shdpro-btn outline" id="shdpro-admin-open-weights" href="#" target="_blank" rel="noopener">weights.json を開く</a>
-        <button class="shdpro-btn outline" id="shdpro-admin-exit">終了</button>
+        <label class="shdpro-chip"><input type="checkbox" id="admin-toggle-debug"> <span>ロジック表示</span></label>
+        <button class="shdpro-btn outline" id="admin-toggle-adv">高度な設定</button>
+        <button class="shdpro-btn outline" id="admin-download-weights">公開用JSONをダウンロード</button>
+        <a class="shdpro-btn outline" id="admin-open-weights" href="#" target="_blank" rel="noopener">weights.json を開く</a>
+        <button class="shdpro-btn outline" id="admin-exit">終了</button>
       </div>
     </div>
 
     <!-- 設問 -->
     <div class="shdpro-card">
-      <div id="shdpro-questions" class="shdpro-row"></div>
+      <div id="questions"></div>
       <div class="shdpro-footer" style="justify-content:center;">
-        <button class="shdpro-btn" id="shdpro-btn-diagnose">診断する</button>
+        <button class="shdpro-btn" id="btn-diagnose">診断する</button>
       </div>
       <div class="shdpro-footer"><span class="shdpro-sub">※各質問の1〜5をタップ → 一番下の「診断する」。結果は自動保存されます。</span></div>
     </div>
 
     <!-- 診断結果 -->
-    <div class="shdpro-card" id="shdpro-result-card" style="display:none;">
+    <div class="shdpro-card" id="result-card" style="display:none;">
       <div class="shdpro-row">
         <div>
           <h3 style="margin:0 0 8px;">診断スコア</h3>
-          <div class="shdpro-bars" id="shdpro-bars"></div>
+          <div class="shdpro-bars" id="bars"></div>
         </div>
         <div>
           <h3 style="margin:12px 0 6px;">おすすめスタイル</h3>
-          <div id="shdpro-subtype-wrap"></div>
+          <div id="subtype-wrap"></div>
           <h3 style="margin:12px 0 8px;">要約</h3>
-          <div id="shdpro-summary" class="shdpro-sub" style="line-height:1.6;color:var(--ink);"></div>
+          <div id="summary" class="shdpro-sub" style="line-height:1.6;color:var(--ink);"></div>
         </div>
       </div>
-      <div id="shdpro-debug" style="display:none; margin-top:12px;" class="shdpro-sub"></div>
+      <div id="debug" style="display:none; margin-top:12px;" class="shdpro-sub"></div>
     </div>
 
     <!-- 高度な設定 -->
-    <div class="shdpro-card" id="shdpro-advanced-box" style="display:none;">
+    <div class="shdpro-card" id="advanced-box" style="display:none;">
       <details open>
         <summary>スコア重み（上級者向け）</summary>
-        <div class="shdpro-sub">各設問が <b>FX / 物販 / MNP / アフィリエイト</b> にどれだけ寄与するかの重み（-1.0〜+1.0）。変更後は自動保存。</div>
-        <table id="shdpro-weights-table"></table>
+        <div class="shdpro-sub">各設問が <b>MNP / TickTok（自演招待） / 物販（細分化） / FX</b> にどれだけ寄与するか（-1.0〜+1.0）。変更後は自動保存。</div>
+        <table id="weights-table"></table>
       </details>
       <div class="shdpro-footer">
-        <button class="shdpro-btn outline" id="shdpro-btn-weights-reset">重みを既定に戻す</button>
-        <button class="shdpro-btn outline" id="shdpro-btn-export">設定を書き出し（JSON）</button>
-        <label class="shdpro-btn outline" for="shdpro-file-import" style="cursor:pointer;">設定を読み込み（JSON）</label>
-        <input id="shdpro-file-import" type="file" accept="application/json" style="display:none;">
+        <button class="shdpro-btn outline" id="btn-weights-reset">重みを既定に戻す</button>
+        <button class="shdpro-btn outline" id="btn-export">設定を書き出し（JSON）</button>
+        <label class="shdpro-btn outline" for="file-import" style="cursor:pointer;">設定を読み込み（JSON）</label>
+        <input id="file-import" type="file" accept="application/json" style="display:none;">
       </div>
     </div>
 
-    <div class="shdpro-center shdpro-sub">© Zeroichi Lab | 本ツールは参考情報です。実行は自己責任でお願いします。</div>
+    <div class="shdpro-center shdpro-sub">© Zeroichi Lab</div>
   </div>
 </div>
 
-<!-- フォールバック（空の器。weights.json で上書き） -->
 <script type="application/json" id="embedded-weights">
-{ "configVersion": 6, "weights": {}, "subtypes": {} }
+{ "configVersion": 11, "weights": {}, "subtypes": {} }
 </script>
 
 <script>
@@ -142,31 +137,14 @@
   const root = document.getElementById('shdpro-app'); if(!root) return;
   const $  = (s, c=document) => c.querySelector(s);
   const $$ = (s, c=document) => Array.from(c.querySelectorAll(s));
+
   const ADMIN_PIN  = root.dataset.adminPin || '1357';
   const REMOTE_VERSION = root.dataset.remoteVersion || '1';
-  const STORE_KEY  = 'shdpro_gh_v4_state';
-  const CAT = ['FX','物販','MNP','アフィリエイト'];
+  const STORE_KEY  = 'shdpro_state_v11';
+  const CAT = ['MNP','TickTok','物販','FX'];
 
-  /* 設問（q23無し＋q25追加） */
+  // 設問定義（FXのQ9は存在しない版／物販にq26〜q32を追加して細分化）
   const QDEF = [
-    // FX
-    {key:'q4',  t:'価格が上下しても落ち着いていられる？',           h:'1=少しの上下でも不安 / 5=落ち着いて判断できる', section:'FX'},
-    {key:'q7',  t:'ツールや自動化で作業を楽にしたい？',               h:'1=あまり使わない / 5=積極的に使いたい', section:'FX'},
-    {key:'q9',  t:'毎週どれくらい学習や検証に時間を使える？',         h:'1=ほとんど取れない / 5=15時間以上でもOK', section:'FX'},
-    {key:'q10', t:'お金の増減にどのくらい耐えられる？',               h:'1=上下はほぼ無理 / 5=ある程度の上下は大丈夫', section:'FX'},
-    {key:'q11', t:'チャートを見て分析するのは得意？',                 h:'1=苦手 / 5=好きで深く理解したい', section:'FX'},
-    {key:'q12', t:'損切りや資金管理など、決めたルールを守れる？',     h:'1=続かない / 5=きっちり守れる', section:'FX'},
-    {key:'q13', t:'ポジションを翌日まで持ち越しても平気？',           h:'1=無理 / 5=問題ない', section:'FX'},
-
-    // 物販
-    {key:'q1',  t:'最初に使える予算は用意できる？',                   h:'1=ほぼゼロ / 5=十分に用意できる', section:'物販'},
-    {key:'q2',  t:'在庫を持ったり梱包・発送をするのは大丈夫？',       h:'1=避けたい / 5=抵抗はない', section:'物販'},
-    {key:'q8',  t:'早く現金化できることはどれくらい大事？',           h:'1=急がない / 5=できるだけ早い方がよい', section:'物販'},
-    {key:'q17', t:'仕入れ先を探して交渉してみたい？',                 h:'1=消極的 / 5=積極的にやりたい', section:'物販'},
-    {key:'q18', t:'リサーチ（商品探し）を継続できる？',               h:'1=続かない / 5=楽しく続けられる', section:'物販'},
-    {key:'q19', t:'返品や問い合わせ対応はどのくらい平気？',           h:'1=とても苦手 / 5=落ち着いて対応できる', section:'物販'},
-    {key:'q20', t:'海外ECや配送、関税の基礎知識はある？',             h:'1=ほぼない / 5=基礎はある', section:'物販'},
-
     // MNP
     {key:'q3',  t:'申し込み・契約・解約などの手続きをコツコツ進められる？', h:'1=苦手 / 5=得意・むしろ好き', section:'MNP'},
     {key:'q6',  t:'店舗に行ったり電話で確認するのは平気？',                 h:'1=避けたい / 5=問題なくできる', section:'MNP'},
@@ -175,31 +153,59 @@
     {key:'q16', t:'特典条件や期日を漏れなく管理できる？',                     h:'1=管理が苦手 / 5=抜け漏れが少ない', section:'MNP'},
     {key:'q25', t:'あなたは個人事業主（開業届）または法人の代表者ですか？',  h:'1=いいえ / 3=準備中 / 5=はい', section:'MNP'},
 
-    // アフィリエイト
-    {key:'q5',  t:'紹介リンクや申込手順を分かりやすく案内できる？',    h:'1=説明が苦手 / 5=要点を簡潔に伝えられる', section:'アフィリエイト'},
-    {key:'q21', t:'画像づくりや文章整えなど簡単な“見せ方”は？',       h:'1=ほぼできない / 5=慣れていて自信がある', section:'アフィリエイト'},
-    {key:'q22', t:'知人への声がけやSNS告知など、軽い発信への抵抗は？', h:'1=かなり抵抗がある / 5=抵抗はほぼない', section:'アフィリエイト'},
-    {key:'q24', t:'短時間でも自分のペースでコツコツ続けられる？',     h:'1=難しい / 5=毎日でも続けられる', section:'アフィリエイト'}
+    // TickTok（自演招待）
+    {key:'q5',  t:'招待手順（初期設定→コード投入→成果確認）を他人に説明できる？', h:'1=説明が苦手 / 5=手順を簡潔に案内できる', section:'TickTok'},
+    {key:'q21', t:'端末初期化・プロファイル作成・アプリ入替など反復作業に慣れている？', h:'1=ほぼできない / 5=得意でミスが少ない', section:'TickTok'},
+    {key:'q22', t:'アカウント衛生（同一端末NG/同一回線回避/冷却期間など）を厳守できる？', h:'1=守るのが苦手 / 5=厳守できる', section:'TickTok'},
+    {key:'q24', t:'毎日短時間でも招待サイクルを途切れず回せる？',           h:'1=難しい / 5=毎日でも続けられる', section:'TickTok'},
+    {key:'q20', t:'ペイ/ポイント→換金のルートや上限管理の基礎を理解している？', h:'1=ほぼ知らない / 5=基礎はある', section:'TickTok'},
+
+    // 物販（細分化：抽選・電脳・無在庫・ポケカ/PSA・買取回転・海外EC）
+    {key:'q1',  t:'最初に使える予算は用意できる？（抽選当選の即支払い・PSA費用を含む）', h:'1=ほぼゼロ / 5=十分に用意できる', section:'物販'},
+    {key:'q2',  t:'在庫や梱包・発送、カードのスリーブ・保護などの作業は大丈夫？', h:'1=避けたい / 5=抵抗はない', section:'物販'},
+    {key:'q8',  t:'早く現金化できることはどれくらい大事？（抽選当選直売/即日買取など）', h:'1=急がない / 5=できるだけ早い方がよい', section:'物販'},
+    {key:'q17', t:'抽選応募や当落/発売日管理など、ポケカ抽選の運用を継続できる？', h:'1=続かない / 5=楽しく続けられる', section:'物販'},
+    {key:'q18', t:'電脳リサーチ（価格履歴・相場比較・買取表）を習慣化できる？',   h:'1=続かない / 5=楽しく続けられる', section:'物販'},
+    {key:'q19', t:'返品・問い合わせ・真贋チェック・状態評価（白欠け等）に落ち着いて対応できる？', h:'1=とても苦手 / 5=問題なく対応できる', section:'物販'},
+    {key:'q20b',t:'PSA提出（封入・申請・返送）やセンタリング基準の基礎を理解している？', h:'1=ほぼ知らない / 5=基礎はある', section:'物販'},
+    {key:'q26', t:'複数アカウントでの抽選応募・当落表の管理を正確に運用できる？', h:'1=不安 / 5=正確に回せる', section:'物販'},
+    {key:'q27', t:'価格履歴ツール（例: Keepa 相当）で仕入れ判断ができる？',   h:'1=ほぼ使えない / 5=指標を使いこなせる', section:'物販'},
+    {key:'q28', t:'支払日・着金日を見越したキャッシュフローを計画できる？',     h:'1=計画が苦手 / 5=計画的に回せる', section:'物販'},
+    {key:'q29', t:'PSA提出の封入・発送・申請・センタリング判定を自走できる？',   h:'1=難しい / 5=ほぼ自走できる', section:'物販'},
+    {key:'q30', t:'無在庫販売のツール運用（在庫同期・価格改定・キャンセル率管理）に対応できる？', h:'1=難しい / 5=問題なく運用できる', section:'物販'},
+    {key:'q31', t:'即日買取の相場表更新を追い、店舗比較で回転率を上げられる？', h:'1=追うのは難しい / 5=常時チェックしている', section:'物販'},
+    {key:'q32', t:'海外EC（輸入）で関税・遅延・返品などのリスクを許容できる？', h:'1=難しい / 5=許容して運用できる', section:'物販'},
+
+    // FX（Q9なし）
+    {key:'q4',  t:'価格が上下しても落ち着いていられる？',              h:'1=少しの上下でも不安 / 5=落ち着いて判断できる', section:'FX'},
+    {key:'q7',  t:'ツールや自動化で作業を楽にしたい？',                  h:'1=あまり使わない / 5=積極的に使いたい', section:'FX'},
+    {key:'q10', t:'お金の増減にどのくらい耐えられる？',                  h:'1=上下はほぼ無理 / 5=ある程度の上下は大丈夫', section:'FX'},
+    {key:'q11', t:'チャートを見て分析するのは得意？',                    h:'1=苦手 / 5=好きで深く理解したい', section:'FX'},
+    {key:'q12', t:'損切りや資金管理など、決めたルールを守れる？',        h:'1=続かない / 5=きっちり守れる', section:'FX'},
+    {key:'q13', t:'ポジションを翌日まで持ち越しても平気？',              h:'1=無理 / 5=問題ない', section:'FX'}
   ];
   const QLABEL = Object.fromEntries(QDEF.map(q=>[q.key,q.t]));
 
+  // 状態
   const EMBED = JSON.parse(document.getElementById('embedded-weights').textContent);
-  let DEFAULT_WEIGHTS = {};   // メイン重み
-  let SUB_WEIGHTS = {};       // サブタイプ重み
-
+  let DEFAULT_WEIGHTS = {};
+  let SUB_WEIGHTS = {};
   let state = load() || {
     advanced:false, debug:false, autosave:true,
     answers: Object.fromEntries(QDEF.map(q=>[q.key,3])),
-    weights: DEFAULT_WEIGHTS,
-    remoteVersion: 0
+    weights: DEFAULT_WEIGHTS, remoteVersion: 0, diagnosed:false
   };
   let isAdmin = (localStorage.getItem('shd_admin') === '1');
 
   (async function init(){
     await loadRemoteConfig();
     renderQuestions(); mountOptionControls();
-    buildWeightsTable(); bindPublicEvents(); bindAdminEvents();
-    bootAdmin(); diagnose(); renderAdminUI();
+    buildWeightsTable(); bindPublic(); bindAdmin();
+    bootAdmin();
+    $('#summary').textContent = '';
+    $('#result-card').style.display = state.diagnosed ? 'block' : 'none';
+    if(state.diagnosed) diagnose();
+    renderAdminUI();
   })();
 
   function buildDefaultURL(){
@@ -220,20 +226,20 @@
       if(cfg && cfg.weights) DEFAULT_WEIGHTS = cfg.weights;
       if(cfg && cfg.subtypes) SUB_WEIGHTS = cfg.subtypes;
       state.weights = DEFAULT_WEIGHTS; state.remoteVersion = remoteVer; saveMaybe();
-      $('#shdpro-admin-open-weights').setAttribute('href', url.replace(/\?v=.*/,''));
-      $('#shdpro-admin-version').textContent = `グローバル設定 v${state.remoteVersion ?? 0}（REMOTE_VERSION=${REMOTE_VERSION}）`;
+      $('#admin-open-weights').setAttribute('href', url.replace(/\?v=.*/,''));
+      $('#admin-version').textContent = `グローバル設定 v${state.remoteVersion ?? 0}（REMOTE_VERSION=${REMOTE_VERSION}）`;
     }catch(err){
       if(isAdmin){
         const box = $('#shdpro-fatal');
         if(box){ box.style.display = 'block'; box.textContent = 'weights.json の取得に失敗。内蔵設定で動作中。'; }
-        console.warn('weights fetch error:', err);
       }
     }
   }
 
   function renderQuestions(){
-    const wrap = $('#shdpro-questions'); wrap.innerHTML = '';
-    const sections = CAT; let qnum = 1;
+    const wrap = $('#questions'); wrap.innerHTML = '';
+    let qnum = 1;
+    const sections = ['MNP','TickTok','物販','FX'];
     sections.forEach(sec=>{
       const secTitle = document.createElement('h3');
       secTitle.className = 'shdpro-sec-title';
@@ -251,56 +257,49 @@
     });
   }
 
-  function bindPublicEvents(){
-    $('#shdpro-btn-diagnose').addEventListener('click', diagnose);
-    $('#shdpro-btn-copy').addEventListener('click', copyAll);
-    $('#shdpro-btn-print').addEventListener('click', ()=>window.print());
-    $('#shdpro-btn-reset').addEventListener('click', ()=>{
+  function bindPublic(){
+    $('#btn-diagnose').addEventListener('click', ()=>{ state.diagnosed=true; diagnose(); });
+    $('#btn-copy').addEventListener('click', copyAll);
+    $('#btn-print').addEventListener('click', ()=>window.print());
+    $('#btn-reset').addEventListener('click', ()=>{
       if(confirm('回答と重みを既定に戻します。よろしいですか？')){
         state.answers = Object.fromEntries(QDEF.map(q=>[q.key,3]));
         state.weights = JSON.parse(JSON.stringify(DEFAULT_WEIGHTS));
+        state.diagnosed=false;
         renderQuestions(); mountOptionControls(); buildWeightsTable();
-        saveMaybe(); hideResults();
+        $('#result-card').style.display='none'; $('#summary').textContent='';
+        saveMaybe();
       }
     });
   }
 
-  function bindAdminEvents(){
-    $('#shdpro-admin-toggle-advanced').addEventListener('click', ()=>{
-      state.advanced = !state.advanced; saveMaybe(); renderAdminUI();
-    });
-    $('#shdpro-admin-toggle-debug').addEventListener('change', (e)=>{
-      state.debug = e.target.checked; saveMaybe(); renderAdminUI();
-    });
-    $('#shdpro-admin-exit').addEventListener('click', ()=> setAdmin(false));
-    $('#shdpro-admin-download-weights').addEventListener('click', ()=>{
-      const payload = { configVersion: (state.remoteVersion|0) + 1, weights: state.weights, subtypes: SUB_WEIGHTS };
+  function bindAdmin(){
+    $('#admin-toggle-adv').addEventListener('click', ()=>{ state.advanced=!state.advanced; saveMaybe(); renderAdminUI(); });
+    $('#admin-toggle-debug').addEventListener('change', (e)=>{ state.debug=e.target.checked; saveMaybe(); renderAdminUI(); });
+    $('#admin-exit').addEventListener('click', ()=> setAdmin(false));
+    $('#admin-download-weights').addEventListener('click', ()=>{
+      const payload = { configVersion: (state.remoteVersion|0)+1, weights: state.weights, subtypes: SUB_WEIGHTS };
       exportJSON(payload, 'weights.json');
     });
   }
-
   function bootAdmin(){
     const url = new URL(location.href);
     const qp = url.searchParams.get('admin');
-    if(qp && qp === ADMIN_PIN){
-      setAdmin(true);
-      history.replaceState({}, '', location.pathname + location.search.replace(/([?&])admin=[^&]+&?/,'$1').replace(/[?&]$/,''));
-    }
-    const titleEl = $('.shdpro-title'); let taps = 0, firstTs = 0, TAP_WINDOW = 600;
+    if(qp && qp===ADMIN_PIN){ setAdmin(true); history.replaceState({},'',location.pathname+location.search.replace(/([?&])admin=[^&]+&?/,'$1').replace(/[?&]$/,'')); }
+    const titleEl = $('.shdpro-title'); let taps=0, first=0, WIN=600;
     titleEl.addEventListener('pointerdown', ()=>{
-      const now = Date.now(); if(!firstTs || now-firstTs>TAP_WINDOW){ firstTs=now; taps=0; }
-      taps++; if(taps>=3 && (now-firstTs)<=TAP_WINDOW){ const pin = prompt('管理PINを入力'); if(pin===ADMIN_PIN) setAdmin(true); taps=0; firstTs=0; }
+      const now=Date.now(); if(!first||now-first>WIN){ first=now; taps=0; }
+      taps++; if(taps>=3 && (now-first)<=WIN){ const pin=prompt('管理PINを入力'); if(pin===ADMIN_PIN) setAdmin(true); taps=0; first=0; }
     });
     if(isAdmin) renderAdminUI();
   }
-  function setAdmin(flag){ isAdmin=!!flag; localStorage.setItem('shd_admin', isAdmin ? '1' : '0'); renderAdminUI(); }
+  function setAdmin(flag){ isAdmin=!!flag; localStorage.setItem('shd_admin', isAdmin?'1':'0'); renderAdminUI(); }
   function renderAdminUI(){
-    const ribbon = $('#shdpro-admin-ribbon');
-    ribbon.style.display = isAdmin ? 'block' : 'none';
-    $('#shdpro-advanced-box').style.display = (isAdmin && state.advanced) ? 'block' : 'none';
-    $('#shdpro-debug').style.display       = (isAdmin && state.debug)     ? 'block' : 'none';
-    const dbg = $('#shdpro-admin-toggle-debug'); if(dbg) dbg.checked = !!state.debug;
-    const ver = $('#shdpro-admin-version'); if(ver){ ver.textContent = `グローバル設定 v${state.remoteVersion ?? 0}（REMOTE_VERSION=${REMOTE_VERSION}）`; }
+    $('#shdpro-admin-ribbon').style.display = isAdmin ? 'block' : 'none';
+    $('#advanced-box').style.display = (isAdmin && state.advanced) ? 'block' : 'none';
+    $('#debug').style.display       = (isAdmin && state.debug)     ? 'block' : 'none';
+    const dbg = $('#admin-toggle-debug'); if(dbg) dbg.checked = !!state.debug;
+    const ver = $('#admin-version'); if(ver) ver.textContent = `グローバル設定 v${state.remoteVersion ?? 0}（REMOTE_VERSION=${REMOTE_VERSION}）`;
   }
 
   function mountOptionControls(){
@@ -308,14 +307,13 @@
       const rootQ = document.querySelector(`.shdpro-q[data-key="${q.key}"]`);
       const wrap = $('.shdpro-opts', rootQ); if(!wrap) return; wrap.innerHTML = '';
       for(let i=1;i<=5;i++){
-        const b = document.createElement('button');
-        b.type='button'; b.className='shdpro-opt'; b.dataset.val = i;
-        b.setAttribute('role','radio');
-        b.setAttribute('aria-checked', state.answers[q.key]===i ? 'true' : 'false');
+        const b=document.createElement('button');
+        b.type='button'; b.className='shdpro-opt'; b.dataset.val=i;
+        b.setAttribute('role','radio'); b.setAttribute('aria-checked', (state.answers[q.key]===i).toString());
         b.textContent = i;
         b.addEventListener('click', ()=>{
-          state.answers[q.key] = i;
-          $$('.shdpro-opt', wrap).forEach(btn=> btn.setAttribute('aria-checked', btn===b ? 'true' : 'false'));
+          state.answers[q.key]=i;
+          $$('.shdpro-opt', wrap).forEach(btn=> btn.setAttribute('aria-checked', (btn===b).toString()));
           saveMaybe();
         });
         wrap.appendChild(b);
@@ -329,23 +327,23 @@
     const raw     = Object.fromEntries(CAT.map(c=>[c,0]));
     const rows = [];
     QDEF.forEach(q=>{
-      const v = ans[q.key], contrib = {};
+      const v=ans[q.key], contrib={};
       CAT.forEach(c=>{
-        const w = (W[q.key] && W[q.key][c]) || 0;
-        raw[c] += w * v;
-        maxTheo[c] += w>=0 ? w*5 : w*1;
-        contrib[c] = w * v;
+        const w=(W[q.key] && W[q.key][c])||0;
+        raw[c]+=w*v;
+        maxTheo[c]+= w>=0 ? w*5 : w*1;
+        contrib[c]=w*v;
       });
       rows.push({q:q.key, v, contrib});
     });
-    const scores = {}; CAT.forEach(c=>{ let m=maxTheo[c]; if(m===0) m=1; let s=(raw[c]/m)*100; scores[c]=Math.max(0, Math.min(100, s)); });
+    const scores={}; CAT.forEach(c=>{ let m=maxTheo[c]; if(m===0) m=1; let s=(raw[c]/m)*100; scores[c]=Math.max(0, Math.min(100, s)); });
     renderBars(scores); renderSubtypes(scores); renderSummary(scores, rows);
-    $('#shdpro-result-card').style.display = 'block'; saveMaybe();
+    $('#result-card').style.display='block'; saveMaybe();
   }
 
   function renderBars(scores){
-    const wrap = $('#shdpro-bars'); if(!wrap) return;
-    const items = CAT.map(c=>({c, v:Math.round(scores[c])})).sort((a,b)=> b.v - a.v);
+    const wrap = $('#bars'); if(!wrap) return;
+    const items = CAT.map(c=>({c, v:Math.round(scores[c])})).sort((a,b)=> b.v-a.v);
     wrap.innerHTML = items.map(it=>`
       <div class="shdpro-bar">
         <span style="width:${it.v}%;"></span>
@@ -354,7 +352,7 @@
   }
 
   function renderSubtypes(mainScores){
-    const host = document.getElementById('shdpro-subtype-wrap'); if(!host) return;
+    const host = document.getElementById('subtype-wrap'); if(!host) return;
     host.innerHTML = '';
     const ranking = Object.entries(mainScores).map(([c,v])=>({c, v:Math.round(v)})).sort((a,b)=> b.v-a.v);
     const top = ranking[0], second = ranking[1];
@@ -372,54 +370,48 @@
       section.appendChild(bars);
 
       const HINT={
-        // FX（サロン仕様）
-        'ゴトー日トレード':'月6回のゴトー日に限定して狙う局面特化。準備リスト化で負荷を最小化。',
-        '指標トレード':'経済指標「発表後」の値動きに限定し瞬間を取る。直前のEA停止と約定管理を徹底。',
-        '両建てトレード':'理論上リスクを抑えつつ利益を積む型。ヘッジ→崩しの手順を固定化。',
-        'EA（GOLD）':'GOLD自動売買が前提。指標前の停止とDD上限・資金管理を先に定義。',
+        // TickTok（自演招待）
+        '自演招待（Lite/本家）':'維持中SIMで安全に積み上げ。端末台数・アカ衛生管理・招待サイクル最適化が命。',
+        'MNP連動招待強化':'MNPの維持期間と招待サイクルを同期。還元→換金→在庫化の回転率を最大化。',
 
-        // 物販
-        '店舗せどり（予約購入）':'量販店の予約カレンダー×買取相場を同期。',
-        '抽選購入':'当落管理を自動化。プレ値は事前調査で判断。',
-        '電脳':'検索式を型化。価格履歴ツールで再現性。',
-        '無在庫':'在庫0の代わりにツール整備。出品→受注→仕入の運用を固定。',
-        'ポケカ':'新弾抽選・寝かしを分離。PSA10狙いは選定基準を固定。',
+        // 物販（細分化）
+        '店舗せどり（予約購入）':'予約カレンダー×買取相場を同期。即金性重視。',
+        '抽選購入（限定/家電/ゲーム機）':'複垢・当落表の正確運用で当選率と回転率を両立。',
+        '電脳リサーチ（価格履歴）':'価格履歴とトレンドで再現性のある仕入れを組む。',
+        '無在庫（ツール運用）':'在庫同期・価格改定・キャンセル率の管理が生命線。',
+        'ポケカ：新弾抽選即売':'抽選→即売の導線固定。抽選日/発売日管理が肝。',
+        'ポケカ：寝かし投資':'価格推移と需要周期を読む。資金拘束を許容できるかが鍵。',
+        'ポケカ：単体PSA提出':'センタリング判定と封入手順の精度が利益を左右。',
+        '買取回転（即日特化）':'買取表の更新監視と店舗比較で回転率を最大化。',
+        '海外EC併用（輸入）':'為替や関税・遅延リスクを許容して粗利を積む。',
 
         // MNP
         '店舗契約（個人）':'維持期間・回線管理をシート化。現地特典の差を拾う。',
-        '法人契約（複数回線）':'与信と回線枠を最適化。キャッシュフロー管理は厳密に。',
-        'TikTok自演招待':'維持中SIMで成果を積む。アカウント衛生管理が肝。',
+        '法人契約（複数回線）':'前提：個人事業主/法人。回線枠とCF管理を厳密に。',
         '家族・身内回線拡張':'支払いは自分に集約。名義は家族で枠拡張。',
-        'MNP紹介（手数料）':'友人知人に最短ルートで案内。手数料条件は事前合意。',
+        'MNP紹介（手数料）':'友人知人に最短ルート。条件は事前合意。',
 
-        // アフィリ
-        '自己アフィリエイト':'まずは安全に初成果。手順テンプレで再利用。',
-        'サロン紹介特化':'体験談→手順→Q&Aの順で簡潔に。リンクは最後に。',
-        'ブログ/SEO紹介':'1記事1ニーズ。CTAは冒頭・中・末に配置。',
-        'SNSショート紹介':'一本＝一メッセージ。週3本でも複利で効く。',
-        '口コミ/対面紹介':'悩み把握→一言提案→URL送付の三段構成。'
+        // FX（サロン仕様）
+        'ゴトー日トレード':'月6回の局面に限定。準備リストで負荷最小化。',
+        '指標トレード':'発表「後」の一方向だけを狙う。直前のEA停止・約定管理。',
+        '両建てトレード':'ヘッジ→崩し手順を固定し理論を踏み外さない。',
+        'EA（GOLD）':'指標前停止・DD上限・資金管理を先に定義。'
       };
       const top1=subs[0]; const p=document.createElement('p'); p.className='shdpro-sub'; p.style.marginTop='4px';
-      p.textContent=`まずは「${top1.name}」から始めるのが良さそう。${HINT[top1.name]||''}`;
+      p.textContent=`まずは「${top1.name}」から着手。${HINT[top1.name]||''}`;
       section.appendChild(p);
 
-      // ★ 法人前提チェック（Q25）
-      const q25 = (state.answers['q25']||3);
-      const needsBiz = subs.some(s=> s.name.includes('法人契約'));
-      if(needsBiz){
-        const warn = document.createElement('p');
-        warn.className = 'shdpro-sub';
-        warn.style.marginTop = '4px';
-        if(q25 <= 2){
-          warn.innerHTML = '※ <b>法人契約は「個人事業主 or 法人代表」であることが前提</b>です。今は要件未満のため、まずは「店舗契約（個人）」などから始めるのがおすすめ。';
-        }else if(q25 === 3){
-          warn.textContent = '※ 法人契約の前提はほぼ満たせそうです。開業届・設立手続き完了で有利になります。';
-        }else{
-          warn.textContent = '※ 前提クリア済み（個人事業主/法人）。複数回線の枠設計と資金繰りを先につくりましょう。';
+      if(t.c==='MNP'){
+        const q25 = (state.answers['q25']||3);
+        const needsBiz = subs.some(s=> s.name.includes('法人契約'));
+        if(needsBiz){
+          const warn=document.createElement('p'); warn.className='shdpro-sub'; warn.style.marginTop='4px';
+          if(q25<=2){ warn.innerHTML='※ <b>法人契約は「個人事業主/法人代表」が前提</b>です。今は要件未満なので、まずは「店舗契約（個人）」などから。'; }
+          else if(q25===3){ warn.textContent='※ 法人契約の前提はほぼ満たせそう。開業届や設立完了で有利になります。'; }
+          else { warn.textContent='※ 前提クリア済み。回線枠と資金繰りの設計を先に作りましょう。'; }
+          section.appendChild(warn);
         }
-        section.appendChild(warn);
       }
-
       host.appendChild(section);
     });
   }
@@ -443,27 +435,26 @@
     const items = CAT.map(c=>({c, v:Math.round(scores[c])})).sort((a,b)=> b.v-a.v);
     const top = items[0], second = items[1];
     const hints = {
-      FX:'ゴトー日/指標/両建て/EA（GOLD）など、局面特化とルール徹底で戦う設計。',
-      物販:'予約・抽選・電脳・無在庫・ポケカの型で即金性と再現性を両立。',
-      MNP:'店舗中心。法人/個人事業主なら枠拡張しやすい。TikTok招待や紹介も活用。',
-      アフィリエイト:'自己アフィリ＆サロン紹介を主軸に、自分のペースで淡々と継続。'
+      MNP:'店舗中心。要件を満たせば法人枠で拡張しやすい。',
+      TickTok:'自演招待を自分のペースで回し、回線や換金ルートと同期。',
+      物販:'抽選・電脳・無在庫・ポケカ/PSA・買取回転・海外ECの型から着手。',
+      FX:'ゴトー日/指標/両建て/EA（GOLD）で局面特化＋ルール徹底。'
     };
-    $('#shdpro-summary').innerHTML =
+    $('#summary').innerHTML =
       `あなたに<b>一番向いている</b>のは <b>${top.c}</b>（${top.v}%）。` +
-      (second && (top.v-second.v)<=5 ? `続いて<b>二番目に向いている</b>のは <b>${second.c}</b>（${second.v}%）。` : '') +
+      (second && (top.v-second.v)<=5 ? ` 続いて<b>二番目に向いている</b>のは <b>${second.c}</b>（${second.v}%）。` : '') +
       `<br>示唆：${hints[top.c]}`;
-
     if(state.debug && isAdmin){
       let html = '<h4>診断ロジック詳細</h4><table><tr><th>設問</th>' + CAT.map(c=>`<th>${c}</th>`).join('') + '</tr>';
       rows.forEach(r=>{
         html += `<tr><td>${QLABEL[r.q]}（${r.q} / v=${r.v}）</td>` + CAT.map(c=>`<td>${(r.contrib[c]||0).toFixed(2)}</td>`).join('') + '</tr>';
       });
-      html += '</table>'; $('#shdpro-debug').innerHTML = html;
+      html += '</table>'; $('#debug').innerHTML = html;
     }
   }
 
   function buildWeightsTable(){
-    const tbl = $('#shdpro-weights-table'); tbl.innerHTML = '';
+    const tbl = $('#weights-table'); tbl.innerHTML = '';
     const head = document.createElement('tr'); head.innerHTML = `<th>設問</th>${CAT.map(c=>`<th>${c}</th>`).join('')}`; tbl.appendChild(head);
     QDEF.forEach(q=>{
       if(!state.weights[q.key]) state.weights[q.key] = Object.fromEntries(CAT.map(c=>[c,0]));
@@ -471,23 +462,23 @@
       tr.innerHTML = `<th>${q.key}：${q.t}</th>` + CAT.map(c=>`<td><input data-q="${q.key}" data-cat="${c}" type="number" step="0.05" min="-1" max="1" value="${state.weights[q.key][c] ?? 0}" style="width:90px;"></td>`).join('');
       tbl.appendChild(tr);
     });
-    $$('#shdpro-weights-table input').forEach(inp=> inp.addEventListener('input', e=>{
+    $$('#weights-table input').forEach(inp=> inp.addEventListener('input', e=>{
       const q=e.target.getAttribute('data-q'); const c=e.target.getAttribute('data-cat');
       let v=parseFloat(e.target.value||'0'); if(isNaN(v)) v=0; v=Math.max(-1, Math.min(1, v)); e.target.value=v.toFixed(2);
       state.weights[q][c]=v; saveMaybe();
     }));
-    $('#shdpro-btn-weights-reset').addEventListener('click', ()=>{
+    $('#btn-weights-reset').addEventListener('click', ()=>{
       state.weights = JSON.parse(JSON.stringify(DEFAULT_WEIGHTS)); buildWeightsTable(); saveMaybe();
     });
-    $('#shdpro-btn-export').addEventListener('click', ()=> exportJSON({weights:state.weights, subtypes:SUB_WEIGHTS}, 'shd_settings.json') );
-    $('#shdpro-file-import').addEventListener('change', onImportJSON);
+    $('#btn-export').addEventListener('click', ()=> exportJSON({weights:state.weights, subtypes:SUB_WEIGHTS}, 'shd_settings.json') );
+    $('#file-import').addEventListener('change', onImportJSON);
   }
 
   function copyAll(){
-    const text = stripHtml($('#shdpro-summary').innerHTML) + "\n\n" + barsText();
+    const text = stripHtml($('#summary').innerHTML) + "\n\n" + barsText();
     navigator.clipboard.writeText(text).then(()=> alert('結果をコピーしました。')).catch(()=> alert('コピーに失敗しました。'));
   }
-  function barsText(){ return $$('#shdpro-bars .shdpro-bar').map(bar=> $('.shdpro-bar-label', bar).innerText.trim()).join('\n'); }
+  function barsText(){ return $$('#bars .shdpro-bar').map(bar=> $('.shdpro-bar-label', bar).innerText.trim()).join('\n'); }
   function stripHtml(html){ const div=document.createElement('div'); div.innerHTML=html; return div.textContent||div.innerText||''; }
   function exportJSON(obj, filename){ const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; a.click(); URL.revokeObjectURL(url); }
   function onImportJSON(e){
@@ -496,7 +487,6 @@
     reader.onload=()=>{ try{ const data=JSON.parse(reader.result); if(data.weights){state.weights=data.weights;} if(data.subtypes){SUB_WEIGHTS=data.subtypes;} buildWeightsTable(); saveMaybe(); alert('設定を読み込みました。'); }catch(_){ alert('JSONの読み込みに失敗しました。'); } };
     reader.readAsText(f);
   }
-  function hideResults(){ $('#shdpro-result-card').style.display='none'; }
   function saveMaybe(){ if(state.autosave){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); } }
   function load(){ try{ const s=localStorage.getItem(STORE_KEY); return s?JSON.parse(s):null; }catch(_){ return null; } }
 })();
