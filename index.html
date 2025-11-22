@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>副業適性 精密診断Pro（MNP・TickTok自演招待・物販細分化・FX）</title>
-<meta name="description" content="MNP / TickTok（自演招待） / 物販（抽選・電脳・無在庫・ポケカ/PSAほか細分化） / FX の適性をスコア化。『一番向いている／二番目に向いている』＋おすすめスタイルを表示。診断前の要約は空。">
+<title>副業適性 精密診断Pro（MNP・TickTok自演招待・物販・FX）</title>
+<meta name="description" content="MNP / TickTok（自演招待） / 物販（細分化） / FX の適性をスコア化。『同率トップ』表現対応。推奨ルート：MNP→TickTok→物販→FX（両建て）。">
 <style>
 #shdpro-app, #shdpro-app * { box-sizing: border-box; }
 #shdpro-app {
@@ -12,7 +12,7 @@
   --accent:#0ea5e9; --accent-2:#2563eb; --border:#e5e7eb;
   --chip:#f3f4f6; --shadow:0 6px 20px rgba(0,0,0,.12);
   color:var(--ink); background:#eef3f8; padding:2px;
-  --bar-h:26px;
+  --bar-h:28px;
 }
 .shdpro-wrap { max-width:720px; margin:18px auto 60px; padding:0 14px; }
 .shdpro-title { font-weight:800; letter-spacing:.02em; font-size:clamp(22px,3.4vw,32px); margin:2px 0 10px; }
@@ -52,8 +52,7 @@ th { text-align:left; background:var(--chip); }
 </head>
 <body>
 
-<!-- REMOTE_VERSION を上げると weights.json を確実に再取得 -->
-<div id="shdpro-app" data-admin-pin="1357" data-remote-version="11" data-weights-url="weights.json">
+<div id="shdpro-app" data-admin-pin="1357" data-remote-version="13" data-weights-url="weights.json">
   <div class="shdpro-wrap">
 
     <!-- ヘッダー -->
@@ -104,6 +103,9 @@ th { text-align:left; background:var(--chip); }
           <div id="subtype-wrap"></div>
           <h3 style="margin:12px 0 8px;">要約</h3>
           <div id="summary" class="shdpro-sub" style="line-height:1.6;color:var(--ink);"></div>
+          <div class="shdpro-chip" style="margin-top:8px;">
+            推奨ルート：<b style="margin-left:6px;">MNP → TickTok → 物販 → FX（最終：両建て）</b>
+          </div>
         </div>
       </div>
       <div id="debug" style="display:none; margin-top:12px;" class="shdpro-sub"></div>
@@ -129,7 +131,7 @@ th { text-align:left; background:var(--chip); }
 </div>
 
 <script type="application/json" id="embedded-weights">
-{ "configVersion": 11, "weights": {}, "subtypes": {} }
+{ "configVersion": 13, "weights": {}, "subtypes": {} }
 </script>
 
 <script>
@@ -140,10 +142,10 @@ th { text-align:left; background:var(--chip); }
 
   const ADMIN_PIN  = root.dataset.adminPin || '1357';
   const REMOTE_VERSION = root.dataset.remoteVersion || '1';
-  const STORE_KEY  = 'shdpro_state_v11';
+  const STORE_KEY  = 'shdpro_state_v13';
   const CAT = ['MNP','TickTok','物販','FX'];
 
-  // 設問定義（FXのQ9は存在しない版／物販にq26〜q32を追加して細分化）
+  /* 設問定義（前回と同一：MNP→TickTok→物販→FX、FXのQ9は無し、物販細分化あり） */
   const QDEF = [
     // MNP
     {key:'q3',  t:'申し込み・契約・解約などの手続きをコツコツ進められる？', h:'1=苦手 / 5=得意・むしろ好き', section:'MNP'},
@@ -160,7 +162,7 @@ th { text-align:left; background:var(--chip); }
     {key:'q24', t:'毎日短時間でも招待サイクルを途切れず回せる？',           h:'1=難しい / 5=毎日でも続けられる', section:'TickTok'},
     {key:'q20', t:'ペイ/ポイント→換金のルートや上限管理の基礎を理解している？', h:'1=ほぼ知らない / 5=基礎はある', section:'TickTok'},
 
-    // 物販（細分化：抽選・電脳・無在庫・ポケカ/PSA・買取回転・海外EC）
+    // 物販（細分化）
     {key:'q1',  t:'最初に使える予算は用意できる？（抽選当選の即支払い・PSA費用を含む）', h:'1=ほぼゼロ / 5=十分に用意できる', section:'物販'},
     {key:'q2',  t:'在庫や梱包・発送、カードのスリーブ・保護などの作業は大丈夫？', h:'1=避けたい / 5=抵抗はない', section:'物販'},
     {key:'q8',  t:'早く現金化できることはどれくらい大事？（抽選当選直売/即日買取など）', h:'1=急がない / 5=できるだけ早い方がよい', section:'物販'},
@@ -186,7 +188,6 @@ th { text-align:left; background:var(--chip); }
   ];
   const QLABEL = Object.fromEntries(QDEF.map(q=>[q.key,q.t]));
 
-  // 状態
   const EMBED = JSON.parse(document.getElementById('embedded-weights').textContent);
   let DEFAULT_WEIGHTS = {};
   let SUB_WEIGHTS = {};
@@ -202,7 +203,7 @@ th { text-align:left; background:var(--chip); }
     renderQuestions(); mountOptionControls();
     buildWeightsTable(); bindPublic(); bindAdmin();
     bootAdmin();
-    $('#summary').textContent = '';
+    $('#summary').textContent = ''; // 診断前は空
     $('#result-card').style.display = state.diagnosed ? 'block' : 'none';
     if(state.diagnosed) diagnose();
     renderAdminUI();
@@ -368,52 +369,52 @@ th { text-align:left; background:var(--chip); }
           <div class="shdpro-bar-label"><b>${s.name}</b><span>${s.v}%</span></div>
         </div>`).join('');
       section.appendChild(bars);
-
-      const HINT={
-        // TickTok（自演招待）
-        '自演招待（Lite/本家）':'維持中SIMで安全に積み上げ。端末台数・アカ衛生管理・招待サイクル最適化が命。',
-        'MNP連動招待強化':'MNPの維持期間と招待サイクルを同期。還元→換金→在庫化の回転率を最大化。',
-
-        // 物販（細分化）
-        '店舗せどり（予約購入）':'予約カレンダー×買取相場を同期。即金性重視。',
-        '抽選購入（限定/家電/ゲーム機）':'複垢・当落表の正確運用で当選率と回転率を両立。',
-        '電脳リサーチ（価格履歴）':'価格履歴とトレンドで再現性のある仕入れを組む。',
-        '無在庫（ツール運用）':'在庫同期・価格改定・キャンセル率の管理が生命線。',
-        'ポケカ：新弾抽選即売':'抽選→即売の導線固定。抽選日/発売日管理が肝。',
-        'ポケカ：寝かし投資':'価格推移と需要周期を読む。資金拘束を許容できるかが鍵。',
-        'ポケカ：単体PSA提出':'センタリング判定と封入手順の精度が利益を左右。',
-        '買取回転（即日特化）':'買取表の更新監視と店舗比較で回転率を最大化。',
-        '海外EC併用（輸入）':'為替や関税・遅延リスクを許容して粗利を積む。',
-
-        // MNP
-        '店舗契約（個人）':'維持期間・回線管理をシート化。現地特典の差を拾う。',
-        '法人契約（複数回線）':'前提：個人事業主/法人。回線枠とCF管理を厳密に。',
-        '家族・身内回線拡張':'支払いは自分に集約。名義は家族で枠拡張。',
-        'MNP紹介（手数料）':'友人知人に最短ルート。条件は事前合意。',
-
-        // FX（サロン仕様）
-        'ゴトー日トレード':'月6回の局面に限定。準備リストで負荷最小化。',
-        '指標トレード':'発表「後」の一方向だけを狙う。直前のEA停止・約定管理。',
-        '両建てトレード':'ヘッジ→崩し手順を固定し理論を踏み外さない。',
-        'EA（GOLD）':'指標前停止・DD上限・資金管理を先に定義。'
-      };
-      const top1=subs[0]; const p=document.createElement('p'); p.className='shdpro-sub'; p.style.marginTop='4px';
-      p.textContent=`まずは「${top1.name}」から着手。${HINT[top1.name]||''}`;
-      section.appendChild(p);
-
-      if(t.c==='MNP'){
-        const q25 = (state.answers['q25']||3);
-        const needsBiz = subs.some(s=> s.name.includes('法人契約'));
-        if(needsBiz){
-          const warn=document.createElement('p'); warn.className='shdpro-sub'; warn.style.marginTop='4px';
-          if(q25<=2){ warn.innerHTML='※ <b>法人契約は「個人事業主/法人代表」が前提</b>です。今は要件未満なので、まずは「店舗契約（個人）」などから。'; }
-          else if(q25===3){ warn.textContent='※ 法人契約の前提はほぼ満たせそう。開業届や設立完了で有利になります。'; }
-          else { warn.textContent='※ 前提クリア済み。回線枠と資金繰りの設計を先に作りましょう。'; }
-          section.appendChild(warn);
-        }
-      }
       host.appendChild(section);
     });
+  }
+
+  /* 同率表現＋資金増幅ルートの文言 */
+  function renderSummary(scores, rows){
+    const items = CAT.map(c=>({c, v:Math.round(scores[c])})).sort((a,b)=> b.v-a.v);
+    const maxV = items[0].v;
+    const topTies = items.filter(it=>it.v===maxV);
+    const secondV = items.length>topTies.length ? items[topTies.length].v : null;
+    const secondTies = (secondV!==null) ? items.filter(it=>it.v===secondV) : [];
+
+    const hints = {
+      MNP:'まずは現金を増やす土台作り。期日管理を徹底すると伸びやすい。',
+      TickTok:'維持中SIM×招待サイクルで無理なく積み上げ。衛生管理が命。',
+      物販:'抽選・電脳・無在庫・ポケカ/PSA・買取回転・海外ECから合う型を選択。',
+      FX:'最終盤面。サロン仕様の「両建て」中心に、低リスクで資金を守りつつ増やす。'
+    };
+
+    let text='';
+    if(topTies.length>=2){
+      const cats = topTies.map(t=>t.c).join('・');
+      text += `今回は<b>同率トップ</b>：<b>${cats}</b>（${maxV}%）。`;
+      if(secondTies.length>=1){
+        const scats = secondTies.map(t=>t.c).join('・');
+        text += ` 次点候補：<b>${scats}</b>（${secondV}%）。`;
+      }
+      text += `<br>トップ群の中から着手しやすいものを選び、1サイクル回して比較しましょう。示唆：${hints[topTies[0].c]}`;
+    }else{
+      const top = items[0], second = items[1];
+      text += `あなたに<b>一番向いている</b>のは <b>${top.c}</b>（${top.v}%）。`;
+      if(second && (top.v-second.v)<=5){
+        text += ` 続いて<b>二番目に向いている</b>のは <b>${second.c}</b>（${second.v}%）。`;
+      }
+      text += `<br>示唆：${hints[top.c]}`;
+    }
+    text += `<br><b>資金増幅ルートの提案：</b> MNP → TickTok → 物販 → FX（最終：両建て）`;
+    $('#summary').innerHTML = text;
+
+    if(state.debug){
+      let html = '<h4>診断ロジック詳細</h4><table><tr><th>設問</th>' + CAT.map(c=>`<th>${c}</th>`).join('') + '</tr>';
+      rows.forEach(r=>{
+        html += `<tr><td>${QLABEL[r.q]}（${r.q} / v=${r.v}）</td>` + CAT.map(c=>`<td>${(r.contrib[c]||0).toFixed(2)}</td>`).join('') + '</tr>';
+      });
+      html += '</table>'; $('#debug').innerHTML = html;
+    }
   }
 
   function scoreSubtypes(category){
@@ -431,28 +432,20 @@ th { text-align:left; background:var(--chip); }
     return items.sort((a,b)=> b.v-a.v);
   }
 
-  function renderSummary(scores, rows){
-    const items = CAT.map(c=>({c, v:Math.round(scores[c])})).sort((a,b)=> b.v-a.v);
-    const top = items[0], second = items[1];
-    const hints = {
-      MNP:'店舗中心。要件を満たせば法人枠で拡張しやすい。',
-      TickTok:'自演招待を自分のペースで回し、回線や換金ルートと同期。',
-      物販:'抽選・電脳・無在庫・ポケカ/PSA・買取回転・海外ECの型から着手。',
-      FX:'ゴトー日/指標/両建て/EA（GOLD）で局面特化＋ルール徹底。'
-    };
-    $('#summary').innerHTML =
-      `あなたに<b>一番向いている</b>のは <b>${top.c}</b>（${top.v}%）。` +
-      (second && (top.v-second.v)<=5 ? ` 続いて<b>二番目に向いている</b>のは <b>${second.c}</b>（${second.v}%）。` : '') +
-      `<br>示唆：${hints[top.c]}`;
-    if(state.debug && isAdmin){
-      let html = '<h4>診断ロジック詳細</h4><table><tr><th>設問</th>' + CAT.map(c=>`<th>${c}</th>`).join('') + '</tr>';
-      rows.forEach(r=>{
-        html += `<tr><td>${QLABEL[r.q]}（${r.q} / v=${r.v}）</td>` + CAT.map(c=>`<td>${(r.contrib[c]||0).toFixed(2)}</td>`).join('') + '</tr>';
-      });
-      html += '</table>'; $('#debug').innerHTML = html;
-    }
+  /* ユーティリティ */
+  function copyAll(){
+    const text = stripHtml($('#summary').innerHTML) + "\n\n" + barsText();
+    navigator.clipboard.writeText(text).then(()=> alert('結果をコピーしました。')).catch(()=> alert('コピーに失敗しました。'));
   }
-
+  function barsText(){ return $$('#bars .shdpro-bar').map(bar=> $('.shdpro-bar-label', bar).innerText.trim()).join('\n'); }
+  function stripHtml(html){ const div=document.createElement('div'); div.innerHTML=html; return div.textContent||div.innerText||''; }
+  function exportJSON(obj, filename){ const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; a.click(); URL.revokeObjectURL(url); }
+  function onImportJSON(e){
+    const f=e.target.files[0]; if(!f) return;
+    const reader=new FileReader();
+    reader.onload=()=>{ try{ const data=JSON.parse(reader.result); if(data.weights){state.weights=data.weights;} if(data.subtypes){SUB_WEIGHTS=data.subtypes;} buildWeightsTable(); saveMaybe(); alert('設定を読み込みました。'); }catch(_){ alert('JSONの読み込みに失敗しました。'); } };
+    reader.readAsText(f);
+  }
   function buildWeightsTable(){
     const tbl = $('#weights-table'); tbl.innerHTML = '';
     const head = document.createElement('tr'); head.innerHTML = `<th>設問</th>${CAT.map(c=>`<th>${c}</th>`).join('')}`; tbl.appendChild(head);
@@ -472,20 +465,6 @@ th { text-align:left; background:var(--chip); }
     });
     $('#btn-export').addEventListener('click', ()=> exportJSON({weights:state.weights, subtypes:SUB_WEIGHTS}, 'shd_settings.json') );
     $('#file-import').addEventListener('change', onImportJSON);
-  }
-
-  function copyAll(){
-    const text = stripHtml($('#summary').innerHTML) + "\n\n" + barsText();
-    navigator.clipboard.writeText(text).then(()=> alert('結果をコピーしました。')).catch(()=> alert('コピーに失敗しました。'));
-  }
-  function barsText(){ return $$('#bars .shdpro-bar').map(bar=> $('.shdpro-bar-label', bar).innerText.trim()).join('\n'); }
-  function stripHtml(html){ const div=document.createElement('div'); div.innerHTML=html; return div.textContent||div.innerText||''; }
-  function exportJSON(obj, filename){ const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; a.click(); URL.revokeObjectURL(url); }
-  function onImportJSON(e){
-    const f=e.target.files[0]; if(!f) return;
-    const reader=new FileReader();
-    reader.onload=()=>{ try{ const data=JSON.parse(reader.result); if(data.weights){state.weights=data.weights;} if(data.subtypes){SUB_WEIGHTS=data.subtypes;} buildWeightsTable(); saveMaybe(); alert('設定を読み込みました。'); }catch(_){ alert('JSONの読み込みに失敗しました。'); } };
-    reader.readAsText(f);
   }
   function saveMaybe(){ if(state.autosave){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); } }
   function load(){ try{ const s=localStorage.getItem(STORE_KEY); return s?JSON.parse(s):null; }catch(_){ return null; } }
